@@ -1,9 +1,11 @@
 web_app\data\
-web_app/.data/
-data/
-data\
-db\
-db/
+web_app/data/
+
+*.data
+*data\
+*data/
+
+web_app/data/db/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

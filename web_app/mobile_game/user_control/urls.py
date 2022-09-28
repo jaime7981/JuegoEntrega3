@@ -1,9 +1,14 @@
-from django.urls import path
+from django.urls import path, include
 from . import views as usercontrol
-from django.views.generic import RedirectView
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register('users', usercontrol.PlayerViewSet)
+router.register('friend_requests', usercontrol.FriendRequestsViewSet)
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/usercontrol/login')),
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('login', usercontrol.login, name = 'login'),
     path('registration', usercontrol.registration, name = 'registration'),
     path('logout', usercontrol.logout, name = 'logout'),
