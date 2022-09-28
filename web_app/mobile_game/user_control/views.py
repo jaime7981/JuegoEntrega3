@@ -1,22 +1,23 @@
-from django.http import JsonResponse
-import json
-
-from rest_framework import viewsets, status, permissions
-from rest_framework.views import APIView
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from django.contrib.auth.models import User
-from .serializers import MyTokenObtainPairSerializer, PlayerSerializer, FriendRequestsSerializer, RegisterSerializer
+from rest_framework.authtoken.models import Token
+from .serializers import PlayerSerializer, FriendRequestsSerializer, RegisterSerializer, TokenSerializer
 from .models import Player, FriendRequests
 
-class MyObtainTokenPairView(TokenObtainPairView):
-    permission_classes = (permissions.AllowAny,)
-    serializer_class = MyTokenObtainPairSerializer
+class LoginViewSet(viewsets.ModelViewSet):
+    queryset = Token.objects.all()
+    serializer_class = TokenSerializer
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
 class PlayerViewSet(viewsets.ModelViewSet):
-    queryset = queryset = Player.objects.all()
+    queryset = Player.objects.all()
     serializer_class = PlayerSerializer
     permission_classes = [permissions.AllowAny]
 

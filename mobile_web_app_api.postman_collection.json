@@ -34,8 +34,28 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Test_Player1",
+							"type": "text"
+						},
+						{
+							"key": "password1",
+							"value": "Player@Test",
+							"type": "text"
+						},
+						{
+							"key": "password2",
+							"value": "Player@Test",
+							"type": "text"
+						}
+					]
+				},
 				"url": {
-					"raw": "127.0.0.1:8000/usercontrol/players/?username=Test_Player&password1=Player@test&password2=Player@Test",
+					"raw": "127.0.0.1:8000/usercontrol/players/",
 					"host": [
 						"127",
 						"0",
@@ -47,20 +67,6 @@
 						"usercontrol",
 						"players",
 						""
-					],
-					"query": [
-						{
-							"key": "username",
-							"value": "Test_Player"
-						},
-						{
-							"key": "password1",
-							"value": "Player@test"
-						},
-						{
-							"key": "password2",
-							"value": "Player@Test"
-						}
 					]
 				}
 			},
@@ -177,6 +183,94 @@
 						"usercontrol",
 						"friend_requests",
 						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Token",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "Test_Player1",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "Player@Test",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/usercontrol/api-token-auth/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"usercontrol",
+						"api-token-auth",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth With Token",
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "Token 11f1c42832d9823798ea50a7a5bc40eae2bb86c8",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token 11f1c42832d9823798ea50a7a5bc40eae2bb86c8",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8000/usercontrol/login/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"usercontrol",
+						"login",
+						""
 					]
 				}
 			},

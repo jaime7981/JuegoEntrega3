@@ -1,15 +1,8 @@
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 from .models import Player, FriendRequests
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
-
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super(MyTokenObtainPairSerializer, cls).get_token(user)
-        token['username'] = user.username
-        return token
 
 class RegisterSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -30,7 +23,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password1'])
         user.save()
-        Player.objects.create(user = user)
+        Player.objects.create(user=user)
+        Token.objects.create(user=user)
         return user
 
 class UserSerializer(serializers.ModelSerializer):
@@ -44,6 +38,11 @@ class PlayerSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Player
         fields = ['user', 'matches_won', 'matches_lost', 'best_score']
+
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Token
+        fields = '__all__'
 
 class FriendRequestsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
