@@ -33,7 +33,7 @@ class PlayerViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 class FriendRequestsViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     queryset = FriendRequests.objects.all()
     serializer_class = FriendRequestsSerializer
