@@ -2,7 +2,6 @@ from django.contrib.auth.models import User
 from .models import Player, FriendRequests
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -25,21 +24,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"password": "Password fields didn't match."})
         return attrs
 
-    def create(self, validated_data, commit=True):
+    def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username']
         )
         user.set_password(validated_data['password1'])
-        user.save(commit=False)
-        if commit:
-            user.save()
-            player = Player.objects.create(user = user)
-        return player
+        user.save()
+        Player.objects.create(user = user)
+        return user
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'password', 'first_name', 'last_name', 'email']
+        fields = ['id', 'password', 'username']
 
 class PlayerSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer()

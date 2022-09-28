@@ -7,8 +7,6 @@ class Player(models.Model):
     matches_won = models.IntegerField(default=0, null=True, blank=True)
     matches_lost = models.IntegerField(default=0, null=True, blank=True)
     best_score = models.IntegerField(default=0, null=True, blank=True)
-    #first_name = models.CharField(max_length=200, null=True, blank=True)
-    #last_name = models.CharField(max_length=200, null=True, blank=True)
     #friends = models.ManyToManyField(Player, through='FriendRequests')
 
     def __str__(self):
