@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+  webapp:
+    build: ./mobile_game
+    volumes:
+     - ./mobile_game:/django_app
+    image: webapp:django_app
+    container_name: django_web_app
+    environment:
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWD=${DB_PASSWD}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - db
+    ports: 
+     - 8000:8000
+    #command: gunicorn ITS.wsgi:application --bind 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000
+  db:
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    image: postgres
+    container_name: postgres_django_db
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWD}
+    ports:
+      - 5432:5432
+  nginx:
+    build: ./nginx
+    volumes: 
+     - ./web_project:/django_app
+    image: nginx:nginx_app
+    container_name: nginx_web_app
+    depends_on:
+      - webapp
+    ports:
+     - 80:80
