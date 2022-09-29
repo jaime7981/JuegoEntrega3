@@ -10,16 +10,30 @@ from rest_framework.authtoken.models import Token
 from .serializers import PlayerSerializer, FriendRequestsSerializer, RegisterSerializer, TokenSerializer
 from .models import Player, FriendRequests
 
-class LoginViewSet(viewsets.ModelViewSet):
-    queryset = Token.objects.all()
-    serializer_class = TokenSerializer
+class PermissionPolicyMixin:
+    def check_permissions(self, request):
+        try:
+            handler = getattr(self, request.method.lower())
+        except AttributeError:
+            handler = None
+
+        if (
+            handler
+            and self.permission_classes_per_method
+            and self.permission_classes_per_method.get(handler.__name__)
+        ):
+            self.permission_classes = self.permission_classes_per_method.get(handler.__name__)
+        super().check_permissions(request)
+
+class PlayerViewSet(PermissionPolicyMixin, viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
+    permission_classes_per_method = {
+        "create": [permissions.AllowAny]
+    }
 
-class PlayerViewSet(viewsets.ModelViewSet):
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
-    permission_classes = [permissions.AllowAny]
 
     def create(self, request):
         serializer = RegisterSerializer(data=request.data)
@@ -27,14 +41,34 @@ class PlayerViewSet(viewsets.ModelViewSet):
             serializer.save()
         return Response(serializer.data)
 
-    @action(methods=['get'], detail=True)
-    def first_player(self, request, *args, **kwargs):
-        items = Player.objects.get(user = User.objects.get(pk=1))
+    @action(methods=['get'], detail=False)
+    def get_user_info(self, request, *args, **kwargs):
+        items = Player.objects.get(user=request.user)
         serializer = PlayerSerializer(items)
         return Response(serializer.data)
 
 class FriendRequestsViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.AllowAny]
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     queryset = FriendRequests.objects.all()
     serializer_class = FriendRequestsSerializer
+
+    @action(methods=['get'], detail=False)
+    def acepted(self, request, *args, **kwargs):
+        acepted = FriendRequests.objects.filter(acepted_request=True)
+        items = acepted.filter(sender_player=request.user.id) | acepted.filter(reciever_player=request.user.id)
+        serializer = FriendRequestsSerializer(items, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=False)
+    def sent(self, request, *args, **kwargs):
+        items = FriendRequests.objects.filter(acepted_request=False).filter(sender_player=request.user.id)
+        serializer = FriendRequestsSerializer(items, many=True)
+        return Response(serializer.data)
+    
+    @action(methods=['get'], detail=False)
+    def recieved(self, request, *args, **kwargs):
+        items = FriendRequests.objects.filter(acepted_request=False).filter(reciever_player=request.user.id)
+        serializer = FriendRequestsSerializer(items, many=True)
+        return Response(serializer.data)

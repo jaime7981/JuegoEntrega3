@@ -30,7 +30,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'password', 'username']
+        fields = ['id', 'username']
 
 class PlayerSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer()
@@ -44,7 +44,7 @@ class TokenSerializer(serializers.ModelSerializer):
         model = Token
         fields = '__all__'
 
-class FriendRequestsSerializer(serializers.HyperlinkedModelSerializer):
+class FriendRequestsSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequests
         fields = ['sender_player', 'reciever_player', 'acepted_request']
