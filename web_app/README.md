@@ -27,7 +27,7 @@
 
 ## General Tasks
 - [ ] Make models and database
-- [ ] Create login and registration
+- [x] Create login and registration
 - [ ] add more tasks...
 
 ## Deployment
