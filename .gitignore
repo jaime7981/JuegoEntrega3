@@ -3,7 +3,7 @@ web_app/data/
 
 *.data
 *data\
-*data/
+data/
 
 web_app/data/db/
 
@@ -23,7 +23,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
