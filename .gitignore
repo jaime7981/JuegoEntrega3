@@ -5,6 +5,8 @@ web_app/data/
 *data\
 data/
 
+.idea
+
 web_app/data/db/
 
 # Byte-compiled / optimized / DLL files
