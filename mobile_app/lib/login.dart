@@ -1,64 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'dart:developer' as developer;
-import './register.dart';
 
-/*
-void main() => runApp(const EntryApp());
-
-class EntryApp extends StatelessWidget {
-  const EntryApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Code Sample for Navigator',
-      // MaterialApp contains our top-level Navigator
-      initialRoute: '/',
-      routes: <String, WidgetBuilder>{
-        '/': (context) => const LoginView(),
-        '/register': (context) => const RegisterView(),
-      },
-    );
-  }
-}
-*/
-
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: const LoginView(), // Becomes the route named '/'.
-    routes: <String, WidgetBuilder>{
-      '/register': (context) => const RegisterView(),
-      '/login': (context) => const LoginView(),
-    },
-  ));
-}
-
-/* Flutter Material App (Routes) 
-void main() {
-  runApp(MaterialApp(
-    home: const MyAppHome(), // Becomes the route named '/'.
-    routes: <String, WidgetBuilder>{
-      '/a': (context) => const MyPage(title: 'page A'),
-      '/b': (context) => const MyPage(title: 'page B'),
-      '/c': (context) => const MyPage(title: 'page C'),
-    },
-  ));
-}
-
-// Navigate to "View"/Widget
-Navigator.of(context).pushNamed('/b');
-*/
-
-/* Async functions
+/* 
+// Async functions
 Future<void> loadData() async {
   var dataURL = Uri.parse('https://jsonplaceholder.typicode.com/posts');
   http.Response response = await http.get(dataURL);
   setState(() {
     widgets = jsonDecode(response.body);
   });
+}
+
+// Send Post Request
+Future<http.Response> createAlbum(String title) {
+  return http.post(
+    Uri.parse('https://jsonplaceholder.typicode.com/albums'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'title': title,
+    }),
+  );
 }
 */
 
