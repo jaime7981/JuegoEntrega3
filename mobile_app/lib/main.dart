@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './register.dart';
 import './login.dart';
+import './home.dart';
 
 void main() => runApp(const EntryApp());
 
@@ -15,6 +16,7 @@ class EntryApp extends StatelessWidget {
       home: const LoginView(),
       routes: <String, WidgetBuilder>{
         '/register': (context) => const RegisterView(),
+        '/home': (context) => const HomeView(),
       },
     );
   }

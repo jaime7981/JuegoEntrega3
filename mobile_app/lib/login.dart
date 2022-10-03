@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import './login_api.dart';
+import './globals_vars.dart' as globals;
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -73,7 +75,18 @@ class _LoginWidgetState extends State<LoginWidget> {
                   'password': passwordController.text
                 };
                 debugPrint('form data: $data');
-                login(usernameController.text, passwordController.text);
+                Future<http.Response> response =
+                    login(usernameController.text, passwordController.text);
+
+                response.then((value) {
+                  if (globals.userToken != '') {
+                    debugPrint(value.toString());
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed("/home");
+                  }
+                }).catchError((error) {
+                  debugPrint(error.toString());
+                });
               }
             },
             child: const Text('Login'),

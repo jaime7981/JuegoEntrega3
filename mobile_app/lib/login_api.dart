@@ -69,8 +69,7 @@ Future<http.Response> login(String username, String password) async {
   );
 
   if (response.statusCode == 200) {
-    var token = jsonDecode(response.body)['token'].toString();
-    globals.userToken = token;
+    globals.userToken = jsonDecode(response.body)['token'].toString();
     return response;
   } else {
     throw Exception('Failed to login.');

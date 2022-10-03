@@ -103,7 +103,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           ),
           ElevatedButton(
             onPressed: () {
-              // Change to login View
               Navigator.of(context, rootNavigator: true).pushNamed("/");
             },
             child: const Text('Login'),
