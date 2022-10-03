@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:developer' as developer;
 import './register.dart';
 
 /*
@@ -88,6 +90,8 @@ class LoginWidget extends StatefulWidget {
 class _LoginWidgetState extends State<LoginWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +101,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
+            controller: usernameController,
             decoration: const InputDecoration(
               hintText: 'Username',
               labelText: 'Username',
@@ -108,7 +113,8 @@ class _LoginWidgetState extends State<LoginWidget> {
               return null;
             },
           ),
-          TextField(
+          TextFormField(
+            controller: passwordController,
             obscureText: _isObscure,
             decoration: InputDecoration(
                 labelText: 'Password',
@@ -128,6 +134,11 @@ class _LoginWidgetState extends State<LoginWidget> {
               // the form is invalid.
               if (_formKey.currentState!.validate()) {
                 // Process data.
+                var data = {
+                  'username': usernameController.text,
+                  'password': passwordController.text
+                };
+                debugPrint('form data: $data');
               }
             },
             child: const Text('Login'),

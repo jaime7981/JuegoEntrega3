@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
@@ -28,6 +29,9 @@ class RegisterWidget extends StatefulWidget {
 class _RegisterWidgetState extends State<RegisterWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +41,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           TextFormField(
+            controller: usernameController,
             decoration: const InputDecoration(
               hintText: 'Username',
               labelText: 'Username',
@@ -49,6 +54,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             },
           ),
           TextField(
+            controller: passwordController,
             obscureText: _isObscure,
             decoration: InputDecoration(
                 labelText: 'Password',
@@ -62,6 +68,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                     })),
           ),
           TextField(
+            controller: confirmationController,
             obscureText: _isObscure,
             decoration: InputDecoration(
                 labelText: 'Confirmation',
@@ -78,6 +85,17 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 // Validate if passwords matches
+                var data = {
+                  'username': usernameController.text,
+                  'password': passwordController.text,
+                  'confirmation': confirmationController.text
+                };
+                debugPrint('form data: $data');
+                if (passwordController.text == confirmationController.text) {
+                  debugPrint('password matches');
+                } else {
+                  debugPrint('password dont matches');
+                }
               }
             },
             child: const Text('Register'),
