@@ -1,9 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import './register.dart';
 
-void main() => runApp(const MyApp());
+/*
+void main() => runApp(const EntryApp());
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class EntryApp extends StatelessWidget {
+  const EntryApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Code Sample for Navigator',
+      // MaterialApp contains our top-level Navigator
+      initialRoute: '/',
+      routes: <String, WidgetBuilder>{
+        '/': (context) => const LoginView(),
+        '/register': (context) => const RegisterView(),
+      },
+    );
+  }
+}
+*/
+
+void main() {
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: const LoginView(), // Becomes the route named '/'.
+    routes: <String, WidgetBuilder>{
+      '/register': (context) => const RegisterView(),
+      '/login': (context) => const LoginView(),
+    },
+  ));
+}
+
+/* Flutter Material App (Routes) 
+void main() {
+  runApp(MaterialApp(
+    home: const MyAppHome(), // Becomes the route named '/'.
+    routes: <String, WidgetBuilder>{
+      '/a': (context) => const MyPage(title: 'page A'),
+      '/b': (context) => const MyPage(title: 'page B'),
+      '/c': (context) => const MyPage(title: 'page C'),
+    },
+  ));
+}
+
+// Navigate to "View"/Widget
+Navigator.of(context).pushNamed('/b');
+*/
+
+/* Async functions
+Future<void> loadData() async {
+  var dataURL = Uri.parse('https://jsonplaceholder.typicode.com/posts');
+  http.Response response = await http.get(dataURL);
+  setState(() {
+    widgets = jsonDecode(response.body);
+  });
+}
+*/
+
+class LoginView extends StatelessWidget {
+  const LoginView({super.key});
 
   //static const String _title = 'Flutter Code Sample';
   static const String _title = 'Login Page';
@@ -29,6 +87,7 @@ class LoginWidget extends StatefulWidget {
 
 class _LoginWidgetState extends State<LoginWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _isObscure = true;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +99,7 @@ class _LoginWidgetState extends State<LoginWidget> {
           TextFormField(
             decoration: const InputDecoration(
               hintText: 'Username',
+              labelText: 'Username',
             ),
             validator: (String? value) {
               if (value == null || value.isEmpty) {
@@ -48,37 +108,36 @@ class _LoginWidgetState extends State<LoginWidget> {
               return null;
             },
           ),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: 'Password',
-            ),
-            validator: (String? value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
+          TextField(
+            obscureText: _isObscure,
+            decoration: InputDecoration(
+                labelText: 'Password',
+                // this button is used to toggle the password visibility
+                suffixIcon: IconButton(
+                    icon: Icon(
+                        _isObscure ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    })),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ElevatedButton(
-                onPressed: () {
-                  // Validate will return true if the form is valid, or false if
-                  // the form is invalid.
-                  if (_formKey.currentState!.validate()) {
-                    // Process data.
-                  }
-                },
-                child: const Text('Login'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  // Change to register View
-                },
-                child: const Text('Register'),
-              ),
-            ],
+          ElevatedButton(
+            onPressed: () {
+              // Validate will return true if the form is valid, or false if
+              // the form is invalid.
+              if (_formKey.currentState!.validate()) {
+                // Process data.
+              }
+            },
+            child: const Text('Login'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Change to register View
+              Navigator.of(context, rootNavigator: true).pushNamed("/register");
+            },
+            child: const Text('Register'),
           ),
         ],
       ),
