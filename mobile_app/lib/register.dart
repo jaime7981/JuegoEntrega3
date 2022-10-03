@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import './login_api.dart';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
@@ -93,6 +92,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 debugPrint('form data: $data');
                 if (passwordController.text == confirmationController.text) {
                   debugPrint('password matches');
+                  createPlayer(usernameController.text, passwordController.text,
+                      confirmationController.text);
                 } else {
                   debugPrint('password dont matches');
                 }
