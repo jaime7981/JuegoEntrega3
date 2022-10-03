@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import './globals_vars.dart' as globals;
+import '../globals_vars.dart' as globals;
 
 /* 
 // Class Format Example

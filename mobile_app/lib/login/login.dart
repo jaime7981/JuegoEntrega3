@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import './login_api.dart';
+import 'package:http/http.dart' as http;
+import '../api/login_api.dart';
+import '../globals_vars.dart' as globals;
 
-class RegisterView extends StatelessWidget {
-  const RegisterView({super.key});
+class LoginView extends StatelessWidget {
+  const LoginView({super.key});
 
-  static const String _title = 'Register Page';
+  static const String _title = 'Login Page';
 
   @override
   Widget build(BuildContext context) {
@@ -12,25 +14,24 @@ class RegisterView extends StatelessWidget {
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: const RegisterWidget(),
+        body: const LoginWidget(),
       ),
     );
   }
 }
 
-class RegisterWidget extends StatefulWidget {
-  const RegisterWidget({super.key});
+class LoginWidget extends StatefulWidget {
+  const LoginWidget({super.key});
 
   @override
-  State<RegisterWidget> createState() => _RegisterWidgetState();
+  State<LoginWidget> createState() => _LoginWidgetState();
 }
 
-class _RegisterWidgetState extends State<RegisterWidget> {
+class _LoginWidgetState extends State<LoginWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +48,12 @@ class _RegisterWidgetState extends State<RegisterWidget> {
             ),
             validator: (String? value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter a username';
+                return 'Please enter some text';
               }
               return null;
             },
           ),
-          TextField(
+          TextFormField(
             controller: passwordController,
             obscureText: _isObscure,
             decoration: InputDecoration(
@@ -66,46 +67,35 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       });
                     })),
           ),
-          TextField(
-            controller: confirmationController,
-            obscureText: _isObscure,
-            decoration: InputDecoration(
-                labelText: 'Confirmation',
-                suffixIcon: IconButton(
-                    icon: Icon(
-                        _isObscure ? Icons.visibility : Icons.visibility_off),
-                    onPressed: () {
-                      setState(() {
-                        _isObscure = !_isObscure;
-                      });
-                    })),
-          ),
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                // Validate if passwords matches
                 var data = {
                   'username': usernameController.text,
-                  'password': passwordController.text,
-                  'confirmation': confirmationController.text
+                  'password': passwordController.text
                 };
                 debugPrint('form data: $data');
-                if (passwordController.text == confirmationController.text) {
-                  debugPrint('password matches');
-                  createPlayer(usernameController.text, passwordController.text,
-                      confirmationController.text);
-                } else {
-                  debugPrint('password dont matches');
-                }
+                Future<http.Response> response =
+                    login(usernameController.text, passwordController.text);
+
+                response.then((value) {
+                  if (globals.userToken != '') {
+                    debugPrint(value.toString());
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed("/home");
+                  }
+                }).catchError((error) {
+                  debugPrint(error.toString());
+                });
               }
             },
-            child: const Text('Register'),
+            child: const Text('Login'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/");
+              Navigator.of(context, rootNavigator: true).pushNamed("/register");
             },
-            child: const Text('Login'),
+            child: const Text('Register'),
           ),
         ],
       ),

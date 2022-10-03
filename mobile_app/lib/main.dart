@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import './register.dart';
-import './login.dart';
-import './home.dart';
+import 'login/register.dart';
+import 'login/login.dart';
+import 'home/home.dart';
 
 void main() => runApp(const EntryApp());
 

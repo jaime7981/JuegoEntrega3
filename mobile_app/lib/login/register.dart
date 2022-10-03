@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import './login_api.dart';
-import './globals_vars.dart' as globals;
+import '../api/login_api.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+class RegisterView extends StatelessWidget {
+  const RegisterView({super.key});
 
-  static const String _title = 'Login Page';
+  static const String _title = 'Register Page';
 
   @override
   Widget build(BuildContext context) {
@@ -14,24 +12,25 @@ class LoginView extends StatelessWidget {
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: const LoginWidget(),
+        body: const RegisterWidget(),
       ),
     );
   }
 }
 
-class LoginWidget extends StatefulWidget {
-  const LoginWidget({super.key});
+class RegisterWidget extends StatefulWidget {
+  const RegisterWidget({super.key});
 
   @override
-  State<LoginWidget> createState() => _LoginWidgetState();
+  State<RegisterWidget> createState() => _RegisterWidgetState();
 }
 
-class _LoginWidgetState extends State<LoginWidget> {
+class _RegisterWidgetState extends State<RegisterWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,12 +47,12 @@ class _LoginWidgetState extends State<LoginWidget> {
             ),
             validator: (String? value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter some text';
+                return 'Please enter a username';
               }
               return null;
             },
           ),
-          TextFormField(
+          TextField(
             controller: passwordController,
             obscureText: _isObscure,
             decoration: InputDecoration(
@@ -67,35 +66,46 @@ class _LoginWidgetState extends State<LoginWidget> {
                       });
                     })),
           ),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                var data = {
-                  'username': usernameController.text,
-                  'password': passwordController.text
-                };
-                debugPrint('form data: $data');
-                Future<http.Response> response =
-                    login(usernameController.text, passwordController.text);
-
-                response.then((value) {
-                  if (globals.userToken != '') {
-                    debugPrint(value.toString());
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed("/home");
-                  }
-                }).catchError((error) {
-                  debugPrint(error.toString());
-                });
-              }
-            },
-            child: const Text('Login'),
+          TextField(
+            controller: confirmationController,
+            obscureText: _isObscure,
+            decoration: InputDecoration(
+                labelText: 'Confirmation',
+                suffixIcon: IconButton(
+                    icon: Icon(
+                        _isObscure ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _isObscure = !_isObscure;
+                      });
+                    })),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/register");
+              if (_formKey.currentState!.validate()) {
+                // Validate if passwords matches
+                var data = {
+                  'username': usernameController.text,
+                  'password': passwordController.text,
+                  'confirmation': confirmationController.text
+                };
+                debugPrint('form data: $data');
+                if (passwordController.text == confirmationController.text) {
+                  debugPrint('password matches');
+                  createPlayer(usernameController.text, passwordController.text,
+                      confirmationController.text);
+                } else {
+                  debugPrint('password dont matches');
+                }
+              }
             },
             child: const Text('Register'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pushNamed("/");
+            },
+            child: const Text('Login'),
           ),
         ],
       ),

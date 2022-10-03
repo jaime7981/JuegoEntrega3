@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import './globals_vars.dart' as globals;
+import '../globals_vars.dart' as globals;
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
