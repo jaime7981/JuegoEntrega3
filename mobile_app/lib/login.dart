@@ -13,16 +13,34 @@ Future<void> loadData() async {
 }
 
 // Send Post Request
-Future<http.Response> createAlbum(String title) {
+Future<http.Response> createUser(String username, String password, String confirmation) {
+  static const _baseUrl = 'http://127.0.0.1:8000';
   return http.post(
-    Uri.parse('https://jsonplaceholder.typicode.com/albums'),
+    Uri.parse('$_baseUrl/usercontrol/players/'),
     headers: <String, String>{
+      'Accept': 'application/json',
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: jsonEncode(<String, String>{
-      'title': title,
+      'username': username,
+      'password1' : password,
+      'password2' : confirmation,
     }),
   );
+}
+
+class Album {
+  final int id;
+  final String title;
+
+  const Album({required this.id, required this.title});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return Album(
+      id: json['id'],
+      title: json['title'],
+    );
+  }
 }
 */
 
@@ -103,6 +121,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                   'password': passwordController.text
                 };
                 debugPrint('form data: $data');
+                login(usernameController.text, passwordController.text);
               }
             },
             child: const Text('Login'),
@@ -117,5 +136,67 @@ class _LoginWidgetState extends State<LoginWidget> {
         ],
       ),
     );
+  }
+}
+
+// API requests
+Future<http.Response> createPlayer(
+    String username, String password, String confirmation) async {
+  const baseUrl = 'http://0.0.0.0:8000';
+
+  final response = await http.post(
+    Uri.parse('$baseUrl/usercontrol/players/'),
+    headers: <String, String>{
+      'Accept': 'application/json',
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'username': username,
+      'password1': password,
+      'password2': confirmation,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    debugPrint(jsonDecode(response.body));
+    return jsonDecode(response.body);
+  } else {
+    throw Exception('Failed to create Player.');
+  }
+}
+
+/*
+var response = await post(Uri.parse(url),
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: {
+      'username': username,
+      'password': password,
+    },
+    encoding: Encoding.getByName("utf-8"));
+*/
+
+Future<http.Response> login(String username, String password) async {
+  const baseUrl = 'http://192.168.0.187:8000';
+
+  final response = await http.post(
+    Uri.parse('$baseUrl/usercontrol/api-token-auth/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{
+      'username': username,
+      'password': password,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    var token = jsonDecode(response.body)['token'].toString();
+    debugPrint(token);
+    return response;
+  } else {
+    throw Exception('Failed to login.');
   }
 }
