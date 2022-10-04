@@ -103,7 +103,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/");
+              Navigator.of(context, rootNavigator: true).pop();
             },
             child: const Text('Login'),
           ),

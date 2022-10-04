@@ -34,7 +34,7 @@ class _HomeWidgetState extends State<HomeWidget> {
           ElevatedButton(
             onPressed: () {
               globals.userToken = '';
-              Navigator.of(context, rootNavigator: true).pushNamed("/");
+              Navigator.of(context, rootNavigator: true).pop();
             },
             child: const Text('Logout'),
           ),
