@@ -80,7 +80,6 @@ class _LoginWidgetState extends State<LoginWidget> {
 
                 response.then((value) {
                   if (globals.userToken != '') {
-                    debugPrint(value.toString());
                     Navigator.of(context, rootNavigator: true)
                         .pushNamed("/home");
                   }

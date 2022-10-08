@@ -70,8 +70,29 @@ Future<http.Response> login(String username, String password) async {
 
   if (response.statusCode == 200) {
     globals.userToken = jsonDecode(response.body)['token'].toString();
+    userInfo();
     return response;
   } else {
     throw Exception('Failed to login.');
+  }
+}
+
+Future<http.Response> userInfo() async {
+  final response = await http.get(
+    Uri.parse('${globals.baseApiUrl}/usercontrol/players/get_user_info/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    debugPrint(jsonDecode(response.body)['user'].toString());
+    globals.userId = jsonDecode(response.body)['user']['id'];
+    globals.username = jsonDecode(response.body)['user']['username'].toString();
+    return response;
+  } else {
+    throw Exception(
+        'Failed to get user info. maybe token ${response.body.toString()}');
   }
 }

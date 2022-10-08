@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../globals_vars.dart' as globals;
+import '../api/friends_api.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -34,9 +35,20 @@ class _HomeWidgetState extends State<HomeWidget> {
           ElevatedButton(
             onPressed: () {
               globals.userToken = '';
+              globals.userId = 0;
+              globals.username = '';
               Navigator.of(context, rootNavigator: true).pop();
             },
             child: const Text('Logout'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              userAceptedFriendRequests();
+              userRecievedFriendRequests();
+              userSentFriendRequests();
+              Navigator.of(context, rootNavigator: true).pushNamed("/friends");
+            },
+            child: const Text('Friend List'),
           ),
         ]);
   }
