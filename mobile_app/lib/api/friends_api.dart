@@ -37,7 +37,7 @@ var response = await post(Uri.parse(url),
 Future<http.Response> userFriendRequests() async {
   final response = await http.get(
     Uri.parse(
-        '${globals.baseApiUrl}/usercontrol/friend_requests/${globals.userId}'),
+        '${globals.baseApiUrl}/usercontrol/friend_requests/${globals.userId}/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -54,7 +54,7 @@ Future<http.Response> userFriendRequests() async {
 
 Future<http.Response> userAceptedFriendRequests() async {
   final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/acepted'),
+    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/acepted/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -71,7 +71,7 @@ Future<http.Response> userAceptedFriendRequests() async {
 
 Future<http.Response> userSentFriendRequests() async {
   final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/sent'),
+    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/sent/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -88,11 +88,34 @@ Future<http.Response> userSentFriendRequests() async {
 
 Future<http.Response> userRecievedFriendRequests() async {
   final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/recieved'),
+    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/recieved/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
     },
+  );
+
+  if (response.statusCode == 200) {
+    debugPrint(jsonDecode(response.body).toString());
+    return response;
+  } else {
+    throw Exception('Failed to get friend requests.');
+  }
+}
+
+Future<http.Response> sendFriendRequests(String username) async {
+  final response = await http.post(
+    Uri.parse(
+        '${globals.baseApiUrl}/usercontrol/friend_requests/send_friend_request_by_username/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+    body: jsonEncode(<String, String>{
+      'sender_player': globals.username,
+      'reciever_player': username,
+      'acepted_request': false.toString(),
+    }),
   );
 
   if (response.statusCode == 200) {
