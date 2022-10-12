@@ -123,8 +123,7 @@ Future<http.Response> sendFriendRequests(String username) async {
   }
 }
 
-Future<http.Response> acceptFriendRequests(
-    String username, int friendRequestId) async {
+Future<http.Response> acceptFriendRequests(int friendRequestId) async {
   final response = await http.put(
     Uri.parse(
         '${globals.baseApiUrl}/usercontrol/friend_requests/$friendRequestId/'),
@@ -140,7 +139,30 @@ Future<http.Response> acceptFriendRequests(
   if (response.statusCode == 200) {
     debugPrint(jsonDecode(response.body).toString());
     return response;
+  } else if (response.statusCode == 204) {
+    debugPrint(response.statusCode.toString());
+    return response;
   } else {
+    throw Exception('Failed to get friend requests.');
+  }
+}
+
+Future<Null> deleteFriendRequests(int friendRequestId) async {
+  final response = await http.delete(
+    Uri.parse(
+        '${globals.baseApiUrl}/usercontrol/friend_requests/$friendRequestId/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    debugPrint(jsonDecode(response.body).toString());
+  } else if (response.statusCode == 204) {
+    debugPrint(response.statusCode.toString());
+  } else {
+    debugPrint(response.statusCode.toString());
     throw Exception('Failed to get friend requests.');
   }
 }
