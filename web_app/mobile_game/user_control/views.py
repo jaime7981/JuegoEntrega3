@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from .serializers import PlayerSerializer, FriendRequestsSerializer, RegisterSerializer, SentFriendRequestSerializer
+from .serializers import PlayerSerializer, FriendRequestsSerializer, RegisterSerializer, SentFriendRequestSerializer, FriendRequestsUsernameSerializer
 from .models import Player, FriendRequests
 
 class PermissionPolicyMixin:
@@ -58,19 +58,19 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
     def acepted(self, request, *args, **kwargs):
         acepted = FriendRequests.objects.filter(acepted_request=True)
         items = acepted.filter(sender_player=request.user.id) | acepted.filter(reciever_player=request.user.id)
-        serializer = FriendRequestsSerializer(items, many=True)
+        serializer = FriendRequestsUsernameSerializer(items, many=True)
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False)
     def sent(self, request, *args, **kwargs):
         items = FriendRequests.objects.filter(acepted_request=False).filter(sender_player=request.user.id)
-        serializer = FriendRequestsSerializer(items, many=True)
+        serializer = FriendRequestsUsernameSerializer(items, many=True)
         return Response(serializer.data)
     
     @action(methods=['get'], detail=False)
     def recieved(self, request, *args, **kwargs):
         items = FriendRequests.objects.filter(acepted_request=False).filter(reciever_player=request.user.id)
-        serializer = FriendRequestsSerializer(items, many=True)
+        serializer = FriendRequestsUsernameSerializer(items, many=True)
         return Response(serializer.data)
 
     @action(methods=['post'], detail=False)

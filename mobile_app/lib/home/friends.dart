@@ -38,7 +38,7 @@ class _FriendsWidgetState extends State<FriendsWidget> {
           Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 TextFormField(
                   controller: usernameController,
@@ -58,6 +58,8 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                     if (_formKey.currentState!.validate()) {
                       sendFriendRequests(usernameController.text).then((value) {
                         debugPrint(value.body.toString());
+                        Navigator.of(context, rootNavigator: true)
+                            .pushReplacementNamed("/friends");
                       }).catchError((error) {
                         debugPrint(error.toString());
                       });
@@ -68,12 +70,119 @@ class _FriendsWidgetState extends State<FriendsWidget> {
               ],
             ),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop();
-            },
-            child: const Text('Back'),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              const Text('Acepted Friend Request'),
+              FutureBuilder<List<FriendRequest>>(
+                future: userAceptedFriendRequests(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('An error has occurred!'),
+                    );
+                  } else if (snapshot.hasData) {
+                    return FriendRequestsList(friendRequests: snapshot.data!);
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+              const Text('Sent Friend Request'),
+              FutureBuilder<List<FriendRequest>>(
+                future: userSentFriendRequests(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('An error has occurred!'),
+                    );
+                  } else if (snapshot.hasData) {
+                    return FriendRequestsList(friendRequests: snapshot.data!);
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+              const Text('Recieved Friend Request'),
+              FutureBuilder<List<FriendRequest>>(
+                future: userRecievedFriendRequests(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('An error has occurred!'),
+                    );
+                  } else if (snapshot.hasData) {
+                    return FriendRequestsList(friendRequests: snapshot.data!);
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
+            ],
           ),
         ]);
+  }
+}
+
+class FriendRequestsList extends StatelessWidget {
+  const FriendRequestsList({super.key, required this.friendRequests});
+
+  final List<FriendRequest> friendRequests;
+
+  @override
+  Widget build(BuildContext context) {
+    var widgetList = [];
+    for (var item in friendRequests) {
+      if (item.aceptedRequest == false &&
+          globals.username == item.recieverUsername) {
+        widgetList.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text(item.senderUsername.toString()),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true)
+                    .pushReplacementNamed("/friends");
+              },
+              child: const Text('Accept Friend Request'),
+            ),
+          ],
+        ));
+      } else if (item.aceptedRequest == false &&
+          globals.username == item.senderUsername) {
+        widgetList.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text('Waiting response from: ${item.recieverUsername}'),
+          ],
+        ));
+      } else if (item.aceptedRequest == true &&
+          globals.username == item.senderUsername) {
+        widgetList.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text('Username: ${item.recieverUsername}'),
+          ],
+        ));
+      } else if (item.aceptedRequest == true &&
+          globals.username == item.recieverUsername) {
+        widgetList.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text('Username: ${item.senderUsername}'),
+          ],
+        ));
+      }
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[for (var item in widgetList) item],
+    );
   }
 }

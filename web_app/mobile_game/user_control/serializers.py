@@ -80,3 +80,17 @@ class FriendRequestsSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequests
         fields = ['sender_player', 'reciever_player', 'acepted_request']
+
+class FriendRequestsUsernameSerializer(serializers.ModelSerializer):
+    sender_username = serializers.SerializerMethodField('get_sender_user')
+    reciever_username = serializers.SerializerMethodField('get_reciever_user')
+
+    class Meta:
+        model = FriendRequests
+        fields = '__all__'
+
+    def get_sender_user(self, friend_request):
+        return friend_request.sender_player.user.username
+
+    def get_reciever_user(self, friend_request):
+        return friend_request.reciever_player.user.username
