@@ -147,8 +147,11 @@ class FriendRequestsList extends StatelessWidget {
             Text(item.senderUsername.toString()),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context, rootNavigator: true)
-                    .pushReplacementNamed("/friends");
+                acceptFriendRequests(item.senderUsername, item.id).then(
+                    (value) => {
+                          Navigator.of(context, rootNavigator: true)
+                              .pushReplacementNamed("/friends")
+                        });
               },
               child: const Text('Accept Friend Request'),
             ),

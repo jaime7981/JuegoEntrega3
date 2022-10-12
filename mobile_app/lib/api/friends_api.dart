@@ -123,6 +123,28 @@ Future<http.Response> sendFriendRequests(String username) async {
   }
 }
 
+Future<http.Response> acceptFriendRequests(
+    String username, int friendRequestId) async {
+  final response = await http.put(
+    Uri.parse(
+        '${globals.baseApiUrl}/usercontrol/friend_requests/$friendRequestId/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+    body: jsonEncode(<String, String>{
+      'acepted_request': true.toString(),
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    debugPrint(jsonDecode(response.body).toString());
+    return response;
+  } else {
+    throw Exception('Failed to get friend requests.');
+  }
+}
+
 Future<http.Response> userDataById(int userId) async {
   final user = await http.get(
     Uri.parse('${globals.baseApiUrl}/usercontrol/players/$userId/'),
@@ -140,6 +162,7 @@ Future<http.Response> userDataById(int userId) async {
 }
 
 class FriendRequest {
+  final int id;
   final int senderPlayer;
   final int recieverPlayer;
   final String senderUsername;
@@ -147,7 +170,8 @@ class FriendRequest {
   final bool aceptedRequest;
 
   const FriendRequest(
-      {required this.senderPlayer,
+      {required this.id,
+      required this.senderPlayer,
       required this.recieverPlayer,
       required this.senderUsername,
       required this.recieverUsername,
@@ -155,6 +179,7 @@ class FriendRequest {
 
   factory FriendRequest.fromJson(Map<String, dynamic> json) {
     return FriendRequest(
+      id: json['id'],
       senderPlayer: json['sender_player'],
       recieverPlayer: json['reciever_player'],
       senderUsername: json['sender_username'],
