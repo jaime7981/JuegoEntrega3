@@ -1,9 +1,15 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
+
 from . import views as game_api
-from django.views.generic import RedirectView
+
+router = routers.DefaultRouter()
+router.register('game', game_api.GameViewSet)
+router.register('lobby', game_api.LobbyViewSet)
+router.register('question', game_api.QuestionViewSet)
+router.register('round', game_api.RoundViewSet)
+router.register('answer', game_api.AnswerViewSet)
 
 urlpatterns = [
-    path('', RedirectView.as_view(url='/game/active_games')),
-    path('active_games', game_api.activeGames, name = 'active_games'),
-    path('join_game', game_api.joinGame, name = 'join_game'),
+    path('', include(router.urls)),
 ]
