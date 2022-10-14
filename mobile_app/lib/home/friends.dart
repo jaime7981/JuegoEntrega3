@@ -32,9 +32,10 @@ class _FriendsWidgetState extends State<FriendsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+    return SingleChildScrollView(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
           Form(
             key: _formKey,
             child: Column(
@@ -126,7 +127,7 @@ class _FriendsWidgetState extends State<FriendsWidget> {
               ),
             ],
           ),
-        ]);
+        ]));
   }
 }
 
@@ -147,13 +148,21 @@ class FriendRequestsList extends StatelessWidget {
             Text(item.senderUsername.toString()),
             ElevatedButton(
               onPressed: () {
-                acceptFriendRequests(item.senderUsername, item.id).then(
-                    (value) => {
-                          Navigator.of(context, rootNavigator: true)
-                              .pushReplacementNamed("/friends")
-                        });
+                acceptFriendRequests(item.id).then((value) => {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed("/friends")
+                    });
               },
-              child: const Text('Accept Friend Request'),
+              child: const Text('Accept'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                deleteFriendRequests(item.id).then((value) => {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed("/friends")
+                    });
+              },
+              child: const Text('Refuse'),
             ),
           ],
         ));
@@ -162,7 +171,16 @@ class FriendRequestsList extends StatelessWidget {
         widgetList.add(Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('Waiting response from: ${item.recieverUsername}'),
+            Text('Sent: ${item.recieverUsername}'),
+            ElevatedButton(
+              onPressed: () {
+                deleteFriendRequests(item.id).then((value) => {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed("/friends")
+                    });
+              },
+              child: const Text('Unsend'),
+            ),
           ],
         ));
       } else if (item.aceptedRequest == true &&
@@ -171,6 +189,15 @@ class FriendRequestsList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text('Username: ${item.recieverUsername}'),
+            ElevatedButton(
+              onPressed: () {
+                deleteFriendRequests(item.id).then((value) => {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed("/friends")
+                    });
+              },
+              child: const Text('Delete'),
+            ),
           ],
         ));
       } else if (item.aceptedRequest == true &&
@@ -179,6 +206,15 @@ class FriendRequestsList extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text('Username: ${item.senderUsername}'),
+            ElevatedButton(
+              onPressed: () {
+                deleteFriendRequests(item.id).then((value) => {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed("/friends")
+                    });
+              },
+              child: const Text('Delete'),
+            ),
           ],
         ));
       }
