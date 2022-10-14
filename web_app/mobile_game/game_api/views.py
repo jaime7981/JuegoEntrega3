@@ -1,11 +1,41 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
-# Create your views here.
-def activeGames(request):
-    response = {'response_type' : 'game api', 'response_data' : 'get active games'}
-    return JsonResponse(response)
+from .serializers import *
+from .models import Game, Lobby, Question, Round, Answer
 
-def joinGame(request):
-    response = {'response_type' : 'game api', 'response_data' : 'join test'}
-    return JsonResponse(response)
+class GameViewSet(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    queryset = Game.objects.all()
+    serializer_class = GameSerializer
+
+class LobbyViewSet(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    queryset = Lobby.objects.all()
+    serializer_class = LobbySerializer
+
+class QuestionViewSet(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+
+class RoundViewSet(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    queryset = Round.objects.all()
+    serializer_class = RoundSerializer
+
+class AnswerViewSet(viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    queryset = Answer.objects.all()
+    serializer_class = AnswerSerializer
