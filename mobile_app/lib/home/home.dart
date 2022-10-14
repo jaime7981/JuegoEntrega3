@@ -46,6 +46,18 @@ class _HomeWidgetState extends State<HomeWidget> {
             },
             child: const Text('Friend List'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pushNamed("/gameRoom");
+            },
+            child: const Text('lobby'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true).pushNamed("/listRoom");
+            },
+            child: const Text('listRoom'),
+          ),
         ]);
   }
 }
