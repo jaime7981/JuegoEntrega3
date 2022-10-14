@@ -36,8 +36,7 @@ var response = await post(Uri.parse(url),
 // API requests
 Future<http.Response> userFriendRequests() async {
   final response = await http.get(
-    Uri.parse(
-        '${globals.baseApiUrl}/usercontrol/friend_requests/${globals.userId}/'),
+    Uri.parse('${globals.baseApiUrl}/friend_requests/${globals.userId}/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -54,7 +53,7 @@ Future<http.Response> userFriendRequests() async {
 
 Future<List<FriendRequest>> userAceptedFriendRequests() async {
   final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/acepted/'),
+    Uri.parse('${globals.baseApiUrl}/friend_requests/acepted/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -70,7 +69,7 @@ Future<List<FriendRequest>> userAceptedFriendRequests() async {
 
 Future<List<FriendRequest>> userSentFriendRequests() async {
   final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/sent/'),
+    Uri.parse('${globals.baseApiUrl}/friend_requests/sent/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -86,7 +85,7 @@ Future<List<FriendRequest>> userSentFriendRequests() async {
 
 Future<List<FriendRequest>> userRecievedFriendRequests() async {
   final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/friend_requests/recieved/'),
+    Uri.parse('${globals.baseApiUrl}/friend_requests/recieved/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -103,7 +102,7 @@ Future<List<FriendRequest>> userRecievedFriendRequests() async {
 Future<http.Response> sendFriendRequests(String username) async {
   final response = await http.post(
     Uri.parse(
-        '${globals.baseApiUrl}/usercontrol/friend_requests/send_friend_request_by_username/'),
+        '${globals.baseApiUrl}/friend_requests/send_friend_request_by_username/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -125,8 +124,7 @@ Future<http.Response> sendFriendRequests(String username) async {
 
 Future<http.Response> acceptFriendRequests(int friendRequestId) async {
   final response = await http.put(
-    Uri.parse(
-        '${globals.baseApiUrl}/usercontrol/friend_requests/$friendRequestId/'),
+    Uri.parse('${globals.baseApiUrl}/friend_requests/$friendRequestId/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -147,10 +145,9 @@ Future<http.Response> acceptFriendRequests(int friendRequestId) async {
   }
 }
 
-Future<Null> deleteFriendRequests(int friendRequestId) async {
+Future<void> deleteFriendRequests(int friendRequestId) async {
   final response = await http.delete(
-    Uri.parse(
-        '${globals.baseApiUrl}/usercontrol/friend_requests/$friendRequestId/'),
+    Uri.parse('${globals.baseApiUrl}/friend_requests/$friendRequestId/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -169,7 +166,7 @@ Future<Null> deleteFriendRequests(int friendRequestId) async {
 
 Future<http.Response> userDataById(int userId) async {
   final user = await http.get(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/players/$userId/'),
+    Uri.parse('${globals.baseApiUrl}/players/$userId/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
