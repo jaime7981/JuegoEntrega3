@@ -145,7 +145,7 @@ Future<http.Response> acceptFriendRequests(int friendRequestId) async {
   }
 }
 
-Future<Null> deleteFriendRequests(int friendRequestId) async {
+Future<void> deleteFriendRequests(int friendRequestId) async {
   final response = await http.delete(
     Uri.parse('${globals.baseApiUrl}/friend_requests/$friendRequestId/'),
     headers: <String, String>{

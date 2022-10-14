@@ -217,6 +217,22 @@ class FriendRequestsList extends StatelessWidget {
             ),
           ],
         ));
+      } else {
+        widgetList.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text('Username: ${item.senderUsername}'),
+            ElevatedButton(
+              onPressed: () {
+                deleteFriendRequests(item.id).then((value) => {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed("/friends")
+                    });
+              },
+              child: const Text('Delete'),
+            ),
+          ],
+        ));
       }
     }
     return Column(
