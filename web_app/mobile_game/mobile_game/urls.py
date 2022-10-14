@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+from rest_framework.authtoken import views as django_auth
 from rest_framework import routers
 
 from user_control import views as usercontrol
@@ -36,4 +37,6 @@ router.register('answer', game_api.AnswerViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-token-auth/', django_auth.obtain_auth_token),
 ]

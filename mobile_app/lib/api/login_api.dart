@@ -37,7 +37,7 @@ var response = await post(Uri.parse(url),
 Future<http.Response> createPlayer(
     String username, String password, String confirmation) async {
   final response = await http.post(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/players/'),
+    Uri.parse('${globals.baseApiUrl}/players/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -58,7 +58,7 @@ Future<http.Response> createPlayer(
 
 Future<http.Response> login(String username, String password) async {
   final response = await http.post(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/api-token-auth/'),
+    Uri.parse('${globals.baseApiUrl}/api-token-auth/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -79,7 +79,7 @@ Future<http.Response> login(String username, String password) async {
 
 Future<http.Response> userInfo() async {
   final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/usercontrol/players/get_user_info/'),
+    Uri.parse('${globals.baseApiUrl}/players/get_user_info/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
