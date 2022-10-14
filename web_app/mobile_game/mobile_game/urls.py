@@ -13,13 +13,27 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.views.generic import RedirectView
 from django.contrib import admin
 from django.urls import path, include
 
+from rest_framework import routers
+
+from user_control import views as usercontrol
+from game_api import views as game_api
+
+router = routers.DefaultRouter()
+# user control endpoints
+router.register('players', usercontrol.PlayerViewSet)
+router.register('friend_requests', usercontrol.FriendRequestsViewSet)
+
+# game endpoints
+router.register('game', game_api.GameViewSet)
+router.register('lobby', game_api.LobbyViewSet)
+router.register('question', game_api.QuestionViewSet)
+router.register('round', game_api.RoundViewSet)
+router.register('answer', game_api.AnswerViewSet)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('game/', include('game_api.urls')),
-    path('usercontrol/', include('user_control.urls')),
-    path('', RedirectView.as_view(url='usercontrol/', permanent=True)),
+    path('', include(router.urls)),
 ]
