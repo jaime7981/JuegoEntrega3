@@ -1,3 +1,5 @@
+from email.policy import default
+from random import choices
 from django.db import models
 from user_control.models import Player
 
@@ -10,6 +12,7 @@ class Game(models.Model): #Done
 
     host = models.OneToOneField(Player, on_delete=models.CASCADE, blank=True, null=True)
     game_state = models.CharField(max_length=1, choices=GAME_STATES)
+    name = models.CharField(max_length=100)
 
     def __str__(self):
         return str([self.host, self.game_state])
@@ -25,6 +28,7 @@ class Lobby(models.Model): #Done
     player = models.ForeignKey(Player, null=True, on_delete=models.CASCADE)
     player_state = models.CharField(max_length=1, choices=PLAYER_STATES)
     points = models.IntegerField(default=0, null=True, blank=True)
+    acepted = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.game)
@@ -40,10 +44,16 @@ class Question(models.Model): #Done
     def __str__(self):
         return str(self.question)
 
-class Round(models.Model): #Done
+class Round(models.Model): #
+    ROUND_STATES = (
+        ('W', 'Writing'),
+        ('A', 'Answering'),
+        ('S', 'Starting'),
+    )
+
     game = models.ForeignKey(Game, null=True, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, null=True, on_delete=models.CASCADE)
-    round_state = models.CharField(max_length=100)
+    round_state = models.CharField(max_length=1, choices=ROUND_STATES)
 
     def __str__(self):
         return str(self.game)

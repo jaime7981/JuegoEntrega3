@@ -33,30 +33,31 @@ class _HomeWidgetState extends State<HomeWidget> {
         children: <Widget>[
           ElevatedButton(
             onPressed: () {
-              globals.userToken = '';
-              globals.userId = 0;
-              globals.username = '';
-              Navigator.of(context, rootNavigator: true).pop();
-            },
-            child: const Text('Logout'),
-          ),
-          ElevatedButton(
-            onPressed: () {
               Navigator.of(context, rootNavigator: true).pushNamed("/friends");
             },
             child: const Text('Friend List'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/gameRoom");
+              Navigator.of(context, rootNavigator: true).pushNamed("/my_games");
             },
-            child: const Text('lobby'),
+            child: const Text('My Games'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/listRoom");
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed("/game_invitations");
             },
-            child: const Text('listRoom'),
+            child: const Text('Game Invitations'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              globals.userToken = '';
+              globals.userId = 0;
+              globals.username = '';
+              Navigator.of(context, rootNavigator: true).pop();
+            },
+            child: const Text('Logout'),
           ),
         ]);
   }

@@ -10,6 +10,9 @@ from rest_framework.authtoken.models import Token
 from .serializers import PlayerSerializer, FriendRequestsSerializer, RegisterSerializer, SentFriendRequestSerializer, FriendRequestsUsernameSerializer
 from .models import Player, FriendRequests
 
+import logging
+logger = logging.getLogger('django')
+
 class PermissionPolicyMixin:
     def check_permissions(self, request):
         try:
@@ -59,6 +62,7 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
         acepted = FriendRequests.objects.filter(acepted_request=True)
         items = acepted.filter(sender_player=request.user.id) | acepted.filter(reciever_player=request.user.id)
         serializer = FriendRequestsUsernameSerializer(items, many=True)
+        logger.info(items)
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False)
@@ -71,6 +75,7 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
     def recieved(self, request, *args, **kwargs):
         items = FriendRequests.objects.filter(acepted_request=False).filter(reciever_player=request.user.id)
         serializer = FriendRequestsUsernameSerializer(items, many=True)
+        logger.info(items)
         return Response(serializer.data)
 
     @action(methods=['post'], detail=False)
