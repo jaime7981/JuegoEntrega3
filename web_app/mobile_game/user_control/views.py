@@ -69,7 +69,6 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
     def sent(self, request, *args, **kwargs):
         items = FriendRequests.objects.filter(acepted_request=False).filter(sender_player=request.user.id)
         serializer = FriendRequestsUsernameSerializer(items, many=True)
-        logger.info(items)
         return Response(serializer.data)
     
     @action(methods=['get'], detail=False)
