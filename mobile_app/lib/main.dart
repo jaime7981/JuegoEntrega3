@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+
 import 'login/register.dart';
 import 'login/login.dart';
+
 import 'home/home.dart';
 import 'home/friends.dart';
+
 import 'lobby/gameRoom.dart';
 import 'lobby/listRoom.dart';
+import 'lobby/my_games.dart';
+import 'lobby/create_game.dart';
+import 'lobby/game_invitations.dart';
 
 void main() => runApp(const EntryApp());
 
@@ -23,6 +29,9 @@ class EntryApp extends StatelessWidget {
         '/friends': (context) => const FriendsView(),
         '/gameRoom': (context) => const GameRoomView(),
         '/listRoom': (context) => const ListRoomView(),
+        '/my_games': (context) => const MyGamesView(),
+        '/create_game': (context) => const CreateGameView(),
+        '/game_invitations': (context) => const GameInvitationsView(),
       },
     );
   }
