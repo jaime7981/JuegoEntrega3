@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/api/game_api.dart';
 
+import 'game_lobby.dart';
+
 class MyGamesView extends StatelessWidget {
   const MyGamesView({super.key});
 
@@ -76,8 +78,27 @@ class GameList extends StatelessWidget {
         children: <Widget>[
           Text(item.name.toString()),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GameLobbyView(
+                      game: item,
+                    ),
+                  ));
+              //Navigator.of(context, rootNavigator: true)
+              //    .pushNamed("/game_lobby");
+            },
             child: const Text('Enter'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              deleteGame(item.id).then((value) => {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushReplacementNamed("/my_games")
+                  });
+            },
+            child: const Text('Delete'),
           ),
         ],
       ));

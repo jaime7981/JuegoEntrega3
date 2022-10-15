@@ -16,6 +16,12 @@ class GameViewSet(viewsets.ModelViewSet):
     queryset = Game.objects.all()
     serializer_class = GameSerializer
 
+    def create(self, request):
+        serializer = CreateGameSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data)
+
     @action(methods=['get'], detail=False)
     def user_created_games(self, request, *args, **kwargs):
         player = Player.objects.get(id = request.user.id)
