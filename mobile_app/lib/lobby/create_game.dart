@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../globals_vars.dart' as globals;
 import 'package:mobile_app/api/friends_api.dart';
+import 'package:mobile_app/api/game_api.dart';
 
 class CreateGameView extends StatelessWidget {
   const CreateGameView({super.key});
@@ -57,7 +58,7 @@ class _CreateGameWidgetState extends State<CreateGameWidget> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      debugPrint('TODO: Create Game');
+                      createGame(gameNameController.text);
                     }
                   },
                   child: const Text('Create Game'),

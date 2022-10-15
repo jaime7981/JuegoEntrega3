@@ -10,7 +10,7 @@ class Game(models.Model): #Done
         ('S', 'Starting'),
     )
 
-    host = models.OneToOneField(Player, on_delete=models.CASCADE, blank=True, null=True)
+    host = models.ForeignKey(Player, on_delete=models.CASCADE, blank=True, null=True)
     game_state = models.CharField(max_length=1, choices=GAME_STATES)
     name = models.CharField(max_length=100)
 
@@ -28,7 +28,7 @@ class Lobby(models.Model): #Done
     player = models.ForeignKey(Player, null=True, on_delete=models.CASCADE)
     player_state = models.CharField(max_length=1, choices=PLAYER_STATES)
     points = models.IntegerField(default=0, null=True, blank=True)
-    acepted = models.BooleanField(default=False)
+    acepted_request = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.game)
