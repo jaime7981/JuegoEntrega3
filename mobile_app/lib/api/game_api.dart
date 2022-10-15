@@ -4,21 +4,24 @@ import 'dart:convert';
 import '../globals_vars.dart' as globals;
 
 class Game {
+  final int id;
   final int host;
   final String gameState;
-  final bool name;
+  final String name;
 
   const Game({
-    required this.host,
+    required this.id,
     required this.gameState,
     required this.name,
+    required this.host,
   });
 
   factory Game.fromJson(Map<String, dynamic> json) {
     return Game(
-      host: json['host'],
-      gameState: json['gameState'],
+      id: json['id'],
+      gameState: json['game_state'],
       name: json['name'],
+      host: json['host'],
     );
   }
 }
@@ -36,7 +39,7 @@ Future<http.Response> createGame(String gameName) async {
       'Authorization': 'Token ${globals.userToken}',
     },
     body: jsonEncode(<String, String>{
-      'game_state': 'W',
+      'game_state': 'S',
       'name': gameName,
       'host': globals.userId.toString(),
     }),
@@ -70,23 +73,6 @@ Future<void> deleteGame(int gameId) async {
   }
 }
 
-// Falta crear endpoints en el backend
-Future<List<Game>> myGames() async {
-  final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/game/user_games/'),
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Token ${globals.userToken}',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    return parseGame(response.body);
-  } else {
-    throw Exception('Failed to get user games.');
-  }
-}
-
 Future<List<Game>> userCreatedGames() async {
   final response = await http.get(
     Uri.parse('${globals.baseApiUrl}/game/user_created_games/'),
@@ -97,6 +83,7 @@ Future<List<Game>> userCreatedGames() async {
   );
 
   if (response.statusCode == 200) {
+    debugPrint(parseGame(response.body).toString());
     return parseGame(response.body);
   } else {
     throw Exception('Failed to get user games.');

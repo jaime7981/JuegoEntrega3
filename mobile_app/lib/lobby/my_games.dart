@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/game_api.dart';
 
 class MyGamesView extends StatelessWidget {
   const MyGamesView({super.key});
@@ -31,18 +32,22 @@ class _MyGamesWidgetState extends State<MyGamesWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text('TODO: My games list endpoint'),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/gameRoom");
+          const Text('Created Games'),
+          FutureBuilder<List<Game>>(
+            future: userCreatedGames(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text('An error has occurred!'),
+                );
+              } else if (snapshot.hasData) {
+                return GameList(games: snapshot.data!);
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
             },
-            child: const Text('example lobby'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/gameRoom");
-            },
-            child: const Text('example lobby'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -53,6 +58,33 @@ class _MyGamesWidgetState extends State<MyGamesWidget> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class GameList extends StatelessWidget {
+  const GameList({super.key, required this.games});
+
+  final List<Game> games;
+
+  @override
+  Widget build(BuildContext context) {
+    var widgetList = [];
+    for (var item in games) {
+      widgetList.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text(item.name.toString()),
+          ElevatedButton(
+            onPressed: () {},
+            child: const Text('Enter'),
+          ),
+        ],
+      ));
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[for (var item in widgetList) item],
     );
   }
 }
