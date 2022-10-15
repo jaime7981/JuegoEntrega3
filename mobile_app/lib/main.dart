@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/api/game_api.dart';
+import 'package:mobile_app/lobby/ongoing_games.dart';
 
 import 'login/register.dart';
 import 'login/login.dart';
@@ -32,6 +33,7 @@ class EntryApp extends StatelessWidget {
         '/gameRoom': (context) => const GameRoomView(),
         '/listRoom': (context) => const ListRoomView(),
         '/my_games': (context) => const MyGamesView(),
+        '/ongoing_games': (context) => const OngoingGamesView(),
         '/create_game': (context) => const CreateGameView(),
         '/game_invitations': (context) => const GameInvitationsView(),
         '/game_lobby': (context) => const GameLobbyView(

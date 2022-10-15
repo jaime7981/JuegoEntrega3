@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class GameInvitationsView extends StatelessWidget {
-  const GameInvitationsView({super.key});
+class OngoingGamesView extends StatelessWidget {
+  const OngoingGamesView({super.key});
 
-  static const String _title = 'Game Invitations';
+  static const String _title = 'Ongoing Games';
 
   @override
   Widget build(BuildContext context) {
@@ -11,20 +11,20 @@ class GameInvitationsView extends StatelessWidget {
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: const GameInvitationsWidget(),
+        body: const OngoingGamesWidget(),
       ),
     );
   }
 }
 
-class GameInvitationsWidget extends StatefulWidget {
-  const GameInvitationsWidget({super.key});
+class OngoingGamesWidget extends StatefulWidget {
+  const OngoingGamesWidget({super.key});
 
   @override
-  State<GameInvitationsWidget> createState() => _GameInvitationsState();
+  State<OngoingGamesWidget> createState() => _OngoingGamesState();
 }
 
-class _GameInvitationsState extends State<GameInvitationsWidget> {
+class _OngoingGamesState extends State<OngoingGamesWidget> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(

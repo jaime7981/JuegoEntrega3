@@ -40,6 +40,24 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              const Text('Joined Players'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  const Text('TODO: joined users endpoint'),
+                  ElevatedButton(
+                    onPressed: () {
+                      debugPrint('TODO: Remove Player');
+                    },
+                    child: const Text('Kick'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
               const Text('Invite Friends'),
               FutureBuilder<List<FriendRequest>>(
                 future: userAceptedFriendRequests(),

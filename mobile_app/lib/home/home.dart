@@ -46,6 +46,13 @@ class _HomeWidgetState extends State<HomeWidget> {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context, rootNavigator: true)
+                  .pushNamed("/ongoing_games");
+            },
+            child: const Text('Ongoing Games'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true)
                   .pushNamed("/game_invitations");
             },
             child: const Text('Game Invitations'),
