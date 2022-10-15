@@ -10,7 +10,7 @@ class Game(models.Model): #Done
         ('S', 'Starting'),
     )
 
-    host = models.OneToOneField(Player, on_delete=models.CASCADE, blank=True, null=True)
+    host = models.ForeignKey(Player, on_delete=models.CASCADE, blank=True, null=True)
     game_state = models.CharField(max_length=1, choices=GAME_STATES)
     name = models.CharField(max_length=100)
 
