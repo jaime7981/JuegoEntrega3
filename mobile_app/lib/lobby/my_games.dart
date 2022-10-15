@@ -79,6 +79,15 @@ class GameList extends StatelessWidget {
             onPressed: () {},
             child: const Text('Enter'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              deleteGame(item.id).then((value) => {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushReplacementNamed("/my_games")
+                  });
+            },
+            child: const Text('Delete'),
+          ),
         ],
       ));
     }
