@@ -36,7 +36,8 @@ class _OngoingGamesState extends State<OngoingGamesWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text("TODO: SOLVED (although, it shouldn't allow you to accept a game here... only enter the lobby and leaving it."),
+          const Text(
+              "TODO: SOLVED (although, it shouldn't allow you to accept a game here... only enter the lobby and leaving it."),
           const Text('My lobbies'),
           FutureBuilder<List<Lobby>>(
             future: aceptedLobbyRequests(),
@@ -87,8 +88,6 @@ class _OngoingGamesState extends State<OngoingGamesWidget> {
   }
 }
 
-
-
 class LobbyList extends StatelessWidget {
   const LobbyList({super.key, required this.lobbies});
 
@@ -101,7 +100,6 @@ class LobbyList extends StatelessWidget {
       widgetList.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          
           /*
           ElevatedButton(
             onPressed: () {
@@ -122,6 +120,24 @@ class LobbyList extends StatelessWidget {
           ),*/
           ElevatedButton(
             onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GameLobbyView(
+                      game: Game(
+                          id: item.game,
+                          gameState: item.playerState,
+                          name: item.aceptedRequest.toString(),
+                          host: item.player),
+                    ),
+                  ));
+            },
+            child: Text('game id: ${item.game}'),
+          ),
+          Text('player id: ${item.player} '),
+          Text('state: ${item.playerState}'),
+          ElevatedButton(
+            onPressed: () {
               deleteLobby(item.game).then((value) => {
                     Navigator.of(context, rootNavigator: true)
                         .pushReplacementNamed("/ongoing_games")
@@ -138,4 +154,3 @@ class LobbyList extends StatelessWidget {
     );
   }
 }
-
