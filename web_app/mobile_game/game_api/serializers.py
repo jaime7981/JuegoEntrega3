@@ -38,7 +38,7 @@ class CreateGameSerializer(serializers.ModelSerializer):
 class LobbySerializer(serializers.ModelSerializer):
     class Meta:
         model = Lobby
-        fields = ['game', 'player','player_state', 'points', 'acepted_request']
+        fields = ['id', 'game', 'player','player_state', 'points', 'acepted_request']
 
 class CreateLobbySerializer(serializers.ModelSerializer):
     game = serializers.CharField(write_only=True, required=True)

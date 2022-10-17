@@ -79,15 +79,15 @@ class GameList extends StatelessWidget {
           Text(item.name.toString()),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
+              /*Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => GameLobbyView(
                       game: item,
                     ),
-                  ));
-              //Navigator.of(context, rootNavigator: true)
-              //    .pushNamed("/game_lobby");
+                  ));*/
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed("/game_lobby", arguments: {'game': item});
             },
             child: const Text('Enter'),
           ),

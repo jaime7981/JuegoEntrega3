@@ -65,7 +65,9 @@ class LobbyList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var widgetList = [];
+
     for (var item in lobbies) {
+      debugPrint(item.game.toString());
       widgetList.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -75,14 +77,18 @@ class LobbyList extends StatelessWidget {
           //const Text((game.name)),
 
           //Print the host of the game
-          //const Text(game.host)
-
+          Text('Game id:${item.game}'),
           ElevatedButton(
             onPressed: () {
-              acceptLobby(item.game).then((value) => {
-                    //TODO: Should actually take you to the game probably
+              acceptLobby(item.id, item.game, item.player).then((value) => {
                     Navigator.of(context, rootNavigator: true)
-                        .pushReplacementNamed("/ongoing_games")
+                        .pushNamed("/game_lobby", arguments: {
+                      'game': Game(
+                          id: item.game,
+                          gameState: item.playerState,
+                          name: item.aceptedRequest.toString(),
+                          host: item.player)
+                    })
                   });
             },
             child: const Text('Accept'),

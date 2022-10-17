@@ -75,11 +75,12 @@ Future<http.Response> sendLobbyRequests(int gameId, String username) async {
     debugPrint(jsonDecode(response.body).toString());
     return response;
   } else {
+    debugPrint(response.statusCode.toString());
     throw Exception('Failed to send lobby request.');
   }
 }
 
-Future<http.Response> acceptLobby(int lobyId) async {
+Future<http.Response> acceptLobby(int lobyId, int gameId, int playerId) async {
   final response = await http.put(
     Uri.parse('${globals.baseApiUrl}/lobby/$lobyId/'),
     headers: <String, String>{
@@ -87,6 +88,10 @@ Future<http.Response> acceptLobby(int lobyId) async {
       'Authorization': 'Token ${globals.userToken}',
     },
     body: jsonEncode(<String, String>{
+      "game": gameId.toString(),
+      "player": playerId.toString(),
+      "player_state": "R",
+      "points": '0',
       'acepted_request': true.toString(),
     }),
   );
@@ -98,6 +103,7 @@ Future<http.Response> acceptLobby(int lobyId) async {
     debugPrint(response.statusCode.toString());
     return response;
   } else {
+    debugPrint(response.statusCode.toString());
     throw Exception('Failed to get friend requests.');
   }
 }
@@ -122,6 +128,7 @@ Future<void> deleteLobby(int lobyId) async {
 }
 
 class Lobby {
+  final int id;
   final int game;
   final int player;
   final String playerState;
@@ -129,6 +136,7 @@ class Lobby {
   final bool aceptedRequest;
 
   const Lobby({
+    required this.id,
     required this.game,
     required this.player,
     required this.playerState,
@@ -138,6 +146,7 @@ class Lobby {
 
   factory Lobby.fromJson(Map<String, dynamic> json) {
     return Lobby(
+      id: json['id'],
       game: json['game'],
       player: json['player'],
       playerState: json['player_state'],
