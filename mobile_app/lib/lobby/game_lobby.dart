@@ -42,9 +42,6 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
             children: <Widget>[
           Text(widget.game.name),
           Text('Debug: Game Id ${widget.arguments["game"].id}'),
-          Text('Debug: arguments ${widget.arguments.toString()}'),
-          Text('Debug: arguments ${widget.arguments.keys.toString()}'),
-          Text('Debug: arguments ${widget.arguments["game"].toString()}'),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -161,11 +158,11 @@ class LobbyList extends StatelessWidget {
   Widget build(BuildContext context) {
     var widgetList = [];
     for (var item in lobbies) {
-      if (item.aceptedRequest == true && globals.userId == item.player) {
+      if (item.aceptedRequest == true) {
         widgetList.add(Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('id: ${item.id} '),
+            Text('user: ${item.player} '),
             ElevatedButton(
               onPressed: () {
                 debugPrint('TODO: Remove Player');
