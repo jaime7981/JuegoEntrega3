@@ -75,9 +75,11 @@ class LobbyViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=False)
     def joined(self, request, *args, **kwargs):
-        joined= Lobby.objects.filter(game=request.game.id).filter(acepted_request=True)
-        serializer = LobbySerializer(acepted, many=True)
-        logger.info(acepted)
+        joined= Lobby.objects.filter(game = request.data.game).filter(acepted_request=True)
+        serializer = LobbySerializer(joined, many=True)
+        logger.info(joined)
+
+        #TODO: Then, in frontend, should just print the users.
         return Response(serializer.data)
 
     #Probably not needed, but would need some thought to implement...
