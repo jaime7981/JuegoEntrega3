@@ -59,10 +59,8 @@ class _CreateGameWidgetState extends State<CreateGameWidget> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      createGame(gameNameController.text).then((value) => {
-                            Navigator.of(context, rootNavigator: true)
-                                .pushNamed("/my_games")
-                          });
+                      createGame(gameNameController.text).then((value) =>
+                          {Navigator.of(context, rootNavigator: true).pop()});
                     }
                   },
                   child: const Text('Create Game'),

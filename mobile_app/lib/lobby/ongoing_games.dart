@@ -120,17 +120,14 @@ class LobbyList extends StatelessWidget {
           ),*/
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GameLobbyView(
-                      game: Game(
-                          id: item.game,
-                          gameState: item.playerState,
-                          name: item.aceptedRequest.toString(),
-                          host: item.player),
-                    ),
-                  ));
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed("/game_lobby", arguments: {
+                'game': Game(
+                    id: item.game,
+                    gameState: item.playerState,
+                    name: item.aceptedRequest.toString(),
+                    host: item.player)
+              });
             },
             child: Text('game id: ${item.game}'),
           ),

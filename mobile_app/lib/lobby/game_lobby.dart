@@ -11,19 +11,23 @@ class GameLobbyView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ??
+        <String, dynamic>{}) as Map;
     return MaterialApp(
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: GameLobbyWidget(game: game),
+        body: GameLobbyWidget(game: game, arguments: arguments),
       ),
     );
   }
 }
 
 class GameLobbyWidget extends StatefulWidget {
-  const GameLobbyWidget({super.key, required this.game});
+  const GameLobbyWidget(
+      {super.key, required this.game, required this.arguments});
   final Game game;
+  final Map<dynamic, dynamic> arguments;
 
   @override
   State<GameLobbyWidget> createState() => _GameLobbyWidgetState();
@@ -37,7 +41,10 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
           Text(widget.game.name),
-          Text('Debug: Game Id ${widget.game.id}'),
+          Text('Debug: Game Id ${widget.arguments["game"].id}'),
+          Text('Debug: arguments ${widget.arguments.toString()}'),
+          Text('Debug: arguments ${widget.arguments.keys.toString()}'),
+          Text('Debug: arguments ${widget.arguments["game"].toString()}'),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -46,7 +53,7 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FutureBuilder<List<Lobby>>(
-                    future: usersInLobby(widget.game.id),
+                    future: usersInLobby(widget.arguments["game"].id),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         debugPrint(snapshot.error.toString());

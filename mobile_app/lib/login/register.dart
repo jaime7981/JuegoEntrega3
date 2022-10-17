@@ -93,7 +93,9 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                 if (passwordController.text == confirmationController.text) {
                   debugPrint('password matches');
                   createPlayer(usernameController.text, passwordController.text,
-                      confirmationController.text);
+                          confirmationController.text)
+                      .then((value) =>
+                          {Navigator.of(context, rootNavigator: true).pop()});
                 } else {
                   debugPrint('password dont matches');
                 }
