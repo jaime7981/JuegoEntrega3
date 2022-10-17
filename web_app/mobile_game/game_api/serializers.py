@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
-        fields =  ['host', 'game_state', 'name']
+        fields =  ['id', 'host', 'game_state', 'name']
 
 class CreateGameSerializer(serializers.ModelSerializer):
     host = serializers.IntegerField(write_only=True, required=True)
