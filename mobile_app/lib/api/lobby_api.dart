@@ -4,6 +4,22 @@ import 'dart:convert';
 import '../globals_vars.dart' as globals;
 
 // Falta crear endpoints en el backend
+Future<List<Lobby>> usersInLobby() async {
+  final response = await http.get(
+    Uri.parse('${globals.baseApiUrl}/lobby/joined/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    return parseLobby(response.body);
+  } else {
+    throw Exception('Failed to get lobbies accepted.');
+  }
+}
+
 Future<List<Lobby>> aceptedLobbyRequests() async {
   final response = await http.get(
     Uri.parse('${globals.baseApiUrl}/lobby/acepted/'),
@@ -16,7 +32,7 @@ Future<List<Lobby>> aceptedLobbyRequests() async {
   if (response.statusCode == 200) {
     return parseLobby(response.body);
   } else {
-    throw Exception('Failed to get friend requests.');
+    throw Exception('Failed to get lobbies accepted.');
   }
 }
 
@@ -32,7 +48,7 @@ Future<List<Lobby>> recievedLobbyRequests() async {
   if (response.statusCode == 200) {
     return parseLobby(response.body);
   } else {
-    throw Exception('Failed to get friend requests.');
+    throw Exception('Failed to get lobbies received.');
   }
 }
 
@@ -51,12 +67,12 @@ Future<http.Response> sendLobbyRequests(int gameId, String username) async {
       'acepted_request': false.toString(),
     }),
   );
-
+  debugPrint(response.body);
   if (response.statusCode == 200) {
     debugPrint(jsonDecode(response.body).toString());
     return response;
   } else {
-    throw Exception('Failed to get friend requests.');
+    throw Exception('Failed to send lobby request.');
   }
 }
 
@@ -102,6 +118,7 @@ Future<void> deleteLobby(int lobyId) async {
   }
 }
 
+
 class Lobby {
   final int game;
   final int player;
@@ -132,3 +149,41 @@ List<Lobby> parseLobby(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
   return parsed.map<Lobby>((json) => Lobby.fromJson(json)).toList();
 }
+
+
+/*
+class LobbyRequest {
+  final int id;
+  final int senderPlayer;
+  final int recieverPlayer;
+  final String senderUsername;
+  final String recieverUsername;
+  final bool aceptedRequest;
+
+  const LobbyRequest(
+      {required this.id,
+      required this.senderPlayer,
+      required this.recieverPlayer,
+      required this.senderUsername,
+      required this.recieverUsername,
+      required this.aceptedRequest});
+
+  factory LobbyRequest.fromJson(Map<String, dynamic> json) {
+    return LobbyRequest(
+      id: json['id'],
+      senderPlayer: json['sender_player'],
+      recieverPlayer: json['reciever_player'],
+      senderUsername: json['sender_username'],
+      recieverUsername: json['reciever_username'],
+      aceptedRequest: json['acepted_request'],
+    );
+  }
+}
+
+List<LobbyRequest> parseLobbyRequest(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed
+      .map<LobbyRequest>((json) => LobbyRequest.fromJson(json))
+      .toList();
+}
+*/
