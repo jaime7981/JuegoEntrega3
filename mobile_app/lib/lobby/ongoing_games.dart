@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile_app/api/game_api.dart';
+import 'package:mobile_app/api/lobby_api.dart';
+
+import 'game_lobby.dart';
+
 class OngoingGamesView extends StatelessWidget {
   const OngoingGamesView({super.key});
 
@@ -31,31 +36,26 @@ class _OngoingGamesState extends State<OngoingGamesWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text('TODO: My games list endpoint'),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .pushNamed("/game_lobby");
-                },
-                child: const Text('example lobby'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('TODO: Accept Game');
-                },
-                child: const Text('Accept'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('TODO: Refuse Game');
-                },
-                child: const Text('Refuse'),
-              ),
-            ],
+          const Text("TODO: SOLVED (although, it shouldn't allow you to accept a game here... only enter the lobby and leaving it."),
+          const Text('My lobbies'),
+          FutureBuilder<List<Lobby>>(
+            future: aceptedLobbyRequests(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text('An error has occurred!'),
+                );
+              } else if (snapshot.hasData) {
+                return LobbyList(lobbies: snapshot.data!);
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
           ),
+          /*
+          //Example
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -80,8 +80,62 @@ class _OngoingGamesState extends State<OngoingGamesWidget> {
               ),
             ],
           )
+          */
         ],
       ),
     );
   }
 }
+
+
+
+class LobbyList extends StatelessWidget {
+  const LobbyList({super.key, required this.lobbies});
+
+  final List<Lobby> lobbies;
+
+  @override
+  Widget build(BuildContext context) {
+    var widgetList = [];
+    for (var item in lobbies) {
+      widgetList.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          
+          /*
+          ElevatedButton(
+            onPressed: () {
+              
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GameLobbyView(
+                      game: findGamebyId(item.game)
+                    ),
+                  ));
+              //Navigator.of(context, rootNavigator: true)
+              //    .pushNamed("/game_lobby");
+            },
+            
+            child: const Text('Enter'),
+            
+          ),*/
+          ElevatedButton(
+            onPressed: () {
+              deleteLobby(item.game).then((value) => {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushReplacementNamed("/ongoing_games")
+                  });
+            },
+            child: const Text('Leave Lobby'),
+          ),
+        ],
+      ));
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[for (var item in widgetList) item],
+    );
+  }
+}
+
