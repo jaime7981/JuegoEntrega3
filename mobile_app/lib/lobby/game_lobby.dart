@@ -46,26 +46,20 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FutureBuilder<List<Lobby>>(
-                future: usersInLobby(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('An error has occurred!'),
-                    );
-                  } else if (snapshot.hasData) {
-                    return LobbyList(lobbies: snapshot.data!);
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-                  ElevatedButton(
-                    onPressed: () {
-                      debugPrint('TODO: Remove Player');
+                    future: usersInLobby(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('An error has occurred!'),
+                        );
+                      } else if (snapshot.hasData) {
+                        return LobbyList(lobbies: snapshot.data!);
+                      } else {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
                     },
-                    child: const Text('Kick'),
                   ),
                 ],
               ),
@@ -141,6 +135,40 @@ class FriendRequestsList extends StatelessWidget {
           ],
         ));
       }
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[for (var item in widgetList) item],
+    );
+  }
+}
+
+
+class LobbyList extends StatelessWidget {
+  const LobbyList({super.key, required this.lobbies});
+
+  final List<Lobby> lobbies;
+
+  @override
+  Widget build(BuildContext context) {
+    var widgetList = [];
+    for (var item in lobbies) {
+      if (item.aceptedRequest == true &&
+          globals.username == item.player) {
+        widgetList.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text('Username: ${item.player}'),
+            ElevatedButton(
+                    onPressed: () {
+                      debugPrint('TODO: Remove Player');
+                    },
+                    child: const Text('Kick'),
+            ),
+          ],
+        ));
+      } 
     }
 
     return Column(
