@@ -4,13 +4,16 @@ import 'dart:convert';
 import '../globals_vars.dart' as globals;
 
 // Falta crear endpoints en el backend
-Future<List<Lobby>> usersInLobby() async {
-  final response = await http.get(
+Future<List<Lobby>> usersInLobby(int gameId) async {
+  final response = await http.post(
     Uri.parse('${globals.baseApiUrl}/lobby/joined/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
     },
+    body: jsonEncode(<String, String>{
+      'game_id': gameId.toString(),
+    }),
   );
 
   if (response.statusCode == 200) {

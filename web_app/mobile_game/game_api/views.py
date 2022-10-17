@@ -9,7 +9,7 @@ from user_control.models import Player
 from .serializers import *
 from .models import Game, Lobby, Question, Round, Answer
 
-import logging
+import logging, json
 logger = logging.getLogger('django')
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -71,9 +71,9 @@ class LobbyViewSet(viewsets.ModelViewSet):
             serializer.save()
         return Response(serializer.data)
 
-    @action(methods=['get'], detail=False)
+    @action(methods=['post'], detail=False)
     def joined(self, request, *args, **kwargs):
-        joined= Lobby.objects.filter(game = request.data.game).filter(acepted_request=True)
+        joined= Lobby.objects.filter(game = request.data['game_id']).filter(acepted_request=True)
         serializer = LobbySerializer(joined, many=True)
         logger.info(joined)
 

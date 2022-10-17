@@ -46,9 +46,10 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   FutureBuilder<List<Lobby>>(
-                    future: usersInLobby(),
+                    future: usersInLobby(widget.game.id),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
+                        debugPrint(snapshot.error.toString());
                         return const Center(
                           child: Text('An error has occurred!'),
                         );

@@ -59,12 +59,10 @@ class _CreateGameWidgetState extends State<CreateGameWidget> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      createGame(gameNameController.text);
-                      debugPrint("Created game succesfully");
-                     
-                     //TODO: Solved
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed("/game_lobby");
+                      createGame(gameNameController.text).then((value) => {
+                            Navigator.of(context, rootNavigator: true)
+                                .pushNamed("/my_games")
+                          });
                     }
                   },
                   child: const Text('Create Game'),
@@ -84,7 +82,8 @@ class _CreateGameWidgetState extends State<CreateGameWidget> {
                       child: Text('An error has occurred!'),
                     );
                   } else if (snapshot.hasData) {
-                    return FriendRequestsList(friendRequests: snapshot.data!, game: 1);
+                    return FriendRequestsList(
+                        friendRequests: snapshot.data!, game: 1);
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -99,7 +98,8 @@ class _CreateGameWidgetState extends State<CreateGameWidget> {
 }
 
 class FriendRequestsList extends StatelessWidget {
-  const FriendRequestsList({super.key, required this.friendRequests, required this.game});
+  const FriendRequestsList(
+      {super.key, required this.friendRequests, required this.game});
 
   final List<FriendRequest> friendRequests;
   final int game;
