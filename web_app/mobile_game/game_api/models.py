@@ -33,6 +33,19 @@ class Lobby(models.Model): #Done
     def __str__(self):
         return str(self.game)
 
+
+"""
+#Added LobbyRequests to the model to easily handle the game invitations (analog to friend requests).
+class LobbyRequests(models.Model):
+    game = models.CharField
+    sender_player = models.ForeignKey(Player, null=True, related_name='sender_p', on_delete=models.CASCADE)
+    reciever_player = models.ForeignKey(Player, null=True, related_name='reciever_p', on_delete=models.CASCADE)
+    acepted_request = models.BooleanField()
+
+    def __str__(self):
+        return str([self.sender_player, self.reciever_player, self.acepted_request])
+"""
+
 class Question(models.Model): #Done
     question = models.CharField(max_length=100)
     correct_answer = models.CharField(max_length=100)

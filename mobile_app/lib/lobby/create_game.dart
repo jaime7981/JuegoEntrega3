@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../globals_vars.dart' as globals;
 import 'package:mobile_app/api/friends_api.dart';
 import 'package:mobile_app/api/game_api.dart';
+import 'package:mobile_app/api/lobby_api.dart';
 
 class CreateGameView extends StatelessWidget {
   const CreateGameView({super.key});
@@ -59,6 +60,11 @@ class _CreateGameWidgetState extends State<CreateGameWidget> {
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       createGame(gameNameController.text);
+                      debugPrint("Created game succesfully");
+                     
+                     //TODO: Solved
+                      Navigator.of(context, rootNavigator: true)
+                          .pushNamed("/game_lobby");
                     }
                   },
                   child: const Text('Create Game'),
@@ -78,7 +84,7 @@ class _CreateGameWidgetState extends State<CreateGameWidget> {
                       child: Text('An error has occurred!'),
                     );
                   } else if (snapshot.hasData) {
-                    return FriendRequestsList(friendRequests: snapshot.data!);
+                    return FriendRequestsList(friendRequests: snapshot.data!, game: 1);
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -93,10 +99,10 @@ class _CreateGameWidgetState extends State<CreateGameWidget> {
 }
 
 class FriendRequestsList extends StatelessWidget {
-  const FriendRequestsList({super.key, required this.friendRequests});
+  const FriendRequestsList({super.key, required this.friendRequests, required this.game});
 
   final List<FriendRequest> friendRequests;
-
+  final int game;
   @override
   Widget build(BuildContext context) {
     var widgetList = [];
@@ -110,6 +116,7 @@ class FriendRequestsList extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 debugPrint('TODO: Invite Friend');
+                sendLobbyRequests(game, item.recieverUsername);
               },
               child: const Text('Invite'),
             ),
@@ -124,6 +131,7 @@ class FriendRequestsList extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 debugPrint('TODO: Invite Friend');
+                sendLobbyRequests(game, item.recieverUsername);
               },
               child: const Text('Invite'),
             ),

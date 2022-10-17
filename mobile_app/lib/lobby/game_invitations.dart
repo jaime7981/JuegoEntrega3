@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../globals_vars.dart' as globals;
+import 'package:mobile_app/api/game_api.dart';
+import 'package:mobile_app/api/lobby_api.dart';
+
 
 class GameInvitationsView extends StatelessWidget {
   const GameInvitationsView({super.key});
@@ -25,63 +29,82 @@ class GameInvitationsWidget extends StatefulWidget {
 }
 
 class _GameInvitationsState extends State<GameInvitationsWidget> {
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text('TODO: My games list endpoint'),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .pushNamed("/game_lobby");
-                },
-                child: const Text('example lobby'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('TODO: Accept Game');
-                },
-                child: const Text('Accept'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('TODO: Refuse Game');
-                },
-                child: const Text('Refuse'),
-              ),
-            ],
+          const Text('TODO: SOLVED'),
+          FutureBuilder<List<Lobby>>(
+            future: recievedLobbyRequests(),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return const Center(
+                  child: Text('An error has occurred!'),
+                );
+              } else if (snapshot.hasData) {
+                return LobbyList(lobbies: snapshot.data!);
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .pushNamed("/game_lobby");
-                },
-                child: const Text('example lobby'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('TODO: Accept Game');
-                },
-                child: const Text('Accept'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('TODO: Refuse Game');
-                },
-                child: const Text('Refuse'),
-              ),
-            ],
-          )
         ],
       ),
+    );
+  }
+}
+
+
+class LobbyList extends StatelessWidget {
+  const LobbyList({super.key, required this.lobbies});
+
+  final List<Lobby> lobbies;
+
+  @override
+  Widget build(BuildContext context) {
+    var widgetList = [];
+    for (var item in lobbies) {
+      widgetList.add(Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              //If you haven't accepted the game, you shouldn't be able to enter the lobby (at least at this stage of development).
+              
+              //Print the name of the game
+              //const Text((game.name)),
+
+              //Print the host of the game
+              //const Text(game.host)
+
+              ElevatedButton(
+                onPressed: () {
+                acceptLobby(item.game).then((value) => {
+                      Navigator.of(context, rootNavigator: true)
+                      //TODO: Should actually take you to the game probably
+                          .pushReplacementNamed("/ongoing_games")
+                    });
+              },
+                child: const Text('Accept'),
+              ),
+              ElevatedButton(
+              onPressed: () {
+                deleteLobby(item.game).then((value) => {
+                      Navigator.of(context, rootNavigator: true)
+                          .pushReplacementNamed("/ongoing_games")
+                    });
+              },
+              child: const Text('Refuse'),
+            ),
+            ],
+          ));
+    }
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[for (var item in widgetList) item],
     );
   }
 }

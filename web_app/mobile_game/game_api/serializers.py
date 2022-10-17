@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from .models import Game, Lobby, Question, Round, Answer
 from user_control.models import Player
+from django.contrib.auth.models import User
 
 class GameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
-        fields = '__all__'
+        fields =  ['host', 'game_state', 'name']
 
 class CreateGameSerializer(serializers.ModelSerializer):
     host = serializers.IntegerField(write_only=True, required=True)
@@ -37,7 +38,34 @@ class CreateGameSerializer(serializers.ModelSerializer):
 class LobbySerializer(serializers.ModelSerializer):
     class Meta:
         model = Lobby
-        fields = '__all__'
+        fields = ['game', 'player','player_state', 'points', 'acepted_request']
+
+class CreateLobbySerializer(serializers.ModelSerializer):
+    game = serializers.CharField(write_only=True, required=True)
+    player = serializers.CharField(write_only=True, required=True)
+    player_state = serializers.CharField(write_only=True, required=True)
+    points = serializers.IntegerField(write_only=True, required=True)
+    acepted_request = serializers.BooleanField(write_only=True, required=True)
+
+    class Meta:
+        model = Game
+        fields = ['game', 'player','player_state', 'points', 'acepted_request']
+
+    def validate(self, attrs):
+        return attrs
+
+    def create(self, validated_data):
+        lobby = Lobby.objects.create(
+            game=Game.objects.get(id=validated_data['game']),
+            player=Player.objects.get(user = User.objects.get(username = validated_data['player'])),
+            player_state ='R',
+            points = 0,
+            acepted_request = False
+        )
+        lobby.save()
+        return lobby
+
+        
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
