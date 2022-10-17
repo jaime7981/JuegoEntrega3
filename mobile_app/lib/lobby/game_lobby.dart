@@ -144,7 +144,6 @@ class FriendRequestsList extends StatelessWidget {
   }
 }
 
-
 class LobbyList extends StatelessWidget {
   const LobbyList({super.key, required this.lobbies});
 
@@ -154,21 +153,20 @@ class LobbyList extends StatelessWidget {
   Widget build(BuildContext context) {
     var widgetList = [];
     for (var item in lobbies) {
-      if (item.aceptedRequest == true &&
-          globals.username == item.player) {
+      if (item.aceptedRequest == true && globals.userId == item.player) {
         widgetList.add(Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Text('Username: ${item.player}'),
             ElevatedButton(
-                    onPressed: () {
-                      debugPrint('TODO: Remove Player');
-                    },
-                    child: const Text('Kick'),
+              onPressed: () {
+                debugPrint('TODO: Remove Player');
+              },
+              child: const Text('Kick'),
             ),
           ],
         ));
-      } 
+      }
     }
 
     return Column(

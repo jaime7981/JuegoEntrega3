@@ -118,7 +118,6 @@ Future<void> deleteLobby(int lobyId) async {
   }
 }
 
-
 class Lobby {
   final int game;
   final int player;
@@ -138,7 +137,7 @@ class Lobby {
     return Lobby(
       game: json['game'],
       player: json['player'],
-      playerState: json['playerState'],
+      playerState: json['player_state'],
       points: json['points'],
       aceptedRequest: json['acepted_request'],
     );
@@ -147,6 +146,8 @@ class Lobby {
 
 List<Lobby> parseLobby(String responseBody) {
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  debugPrint(
+      parsed.map<Lobby>((json) => Lobby.fromJson(json)).toList().toString());
   return parsed.map<Lobby>((json) => Lobby.fromJson(json)).toList();
 }
 
