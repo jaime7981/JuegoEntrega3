@@ -82,7 +82,9 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                       child: Text('An error has occurred!'),
                     );
                   } else if (snapshot.hasData) {
-                    return FriendRequestsList(friendRequests: snapshot.data!);
+                    return FriendRequestsList(
+                        friendRequests: snapshot.data!,
+                        gameId: widget.arguments["game"].id);
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -103,9 +105,11 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
 }
 
 class FriendRequestsList extends StatelessWidget {
-  const FriendRequestsList({super.key, required this.friendRequests});
+  const FriendRequestsList(
+      {super.key, required this.friendRequests, required this.gameId});
 
   final List<FriendRequest> friendRequests;
+  final int gameId;
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +123,7 @@ class FriendRequestsList extends StatelessWidget {
             Text('Username: ${item.recieverUsername}'),
             ElevatedButton(
               onPressed: () {
-                sendLobbyRequests(1, item.recieverUsername);
+                sendLobbyRequests(gameId, item.recieverPlayer);
               },
               child: const Text('Invite'),
             ),
@@ -133,7 +137,7 @@ class FriendRequestsList extends StatelessWidget {
             Text('Username: ${item.senderUsername}'),
             ElevatedButton(
               onPressed: () {
-                sendLobbyRequests(1, item.senderUsername);
+                sendLobbyRequests(gameId, item.senderPlayer);
               },
               child: const Text('Invite'),
             ),

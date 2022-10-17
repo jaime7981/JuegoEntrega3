@@ -55,16 +55,16 @@ Future<List<Lobby>> recievedLobbyRequests() async {
   }
 }
 
-Future<http.Response> sendLobbyRequests(int gameId, String username) async {
+Future<http.Response> sendLobbyRequests(int gameId, int username) async {
   final response = await http.post(
-    Uri.parse('${globals.baseApiUrl}/lobby/send_lobby_request/'),
+    Uri.parse('${globals.baseApiUrl}/lobby/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
     },
     body: jsonEncode(<String, String>{
       'game': gameId.toString(),
-      'player': username,
+      'player': username.toString(),
       'player_state': 'W',
       'points': '0',
       'acepted_request': false.toString(),
@@ -73,6 +73,8 @@ Future<http.Response> sendLobbyRequests(int gameId, String username) async {
   debugPrint(response.body);
   if (response.statusCode == 200) {
     debugPrint(jsonDecode(response.body).toString());
+    return response;
+  } else if (response.statusCode == 201) {
     return response;
   } else {
     debugPrint(response.statusCode.toString());
