@@ -34,7 +34,7 @@ class _GameInvitationsState extends State<GameInvitationsWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text('TODO: SOLVED'),
+          const Text('Invitations'),
           FutureBuilder<List<Lobby>>(
             future: recievedLobbyRequests(),
             builder: (context, snapshot) {

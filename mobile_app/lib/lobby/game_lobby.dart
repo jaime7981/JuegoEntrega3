@@ -41,7 +41,7 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
           Text(widget.game.name),
-          Text('Debug: Game Id ${widget.arguments["game"].id}'),
+          Text('Game Id ${widget.arguments["game"].id}'),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -165,7 +165,24 @@ class LobbyList extends StatelessWidget {
             Text('user: ${item.player} '),
             ElevatedButton(
               onPressed: () {
-                debugPrint('TODO: Remove Player');
+                deleteLobby(item.id).then((value) => {
+                      if (item.player == globals.userId)
+                        {
+                          Navigator.of(context, rootNavigator: true)
+                              .pushReplacementNamed("/ongoing_games")
+                        }
+                      else
+                        {
+                          Navigator.of(context, rootNavigator: true)
+                              .pushReplacementNamed("/game_lobby", arguments: {
+                            'game': Game(
+                                id: item.game,
+                                gameState: item.playerState,
+                                name: item.aceptedRequest.toString(),
+                                host: item.player)
+                          })
+                        }
+                    });
               },
               child: const Text('Kick'),
             ),

@@ -36,8 +36,6 @@ class _OngoingGamesState extends State<OngoingGamesWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text(
-              "TODO: SOLVED (although, it shouldn't allow you to accept a game here... only enter the lobby and leaving it."),
           const Text('My lobbies'),
           FutureBuilder<List<Lobby>>(
             future: aceptedLobbyRequests(),
