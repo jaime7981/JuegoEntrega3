@@ -27,11 +27,9 @@ class GameViewSet(viewsets.ModelViewSet):
 
     @action(methods=['get'], detail=False)
     def user_created_games(self, request, *args, **kwargs):
-        pla = Player.objects.get(id = request.user.id)
-        items = Game.objects.filter(host=request.user.id)
-        logger.info(items)
+        player = Player.objects.get(id = request.user.id)
+        items = Game.objects.filter(host=player)
         serializer = GameSerializer(items, many=True)
-    
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False)
