@@ -165,7 +165,7 @@ class LobbyList extends StatelessWidget {
         widgetList.add(Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('Username: ${item.player}'),
+            Text('id: ${item.id} '),
             ElevatedButton(
               onPressed: () {
                 debugPrint('TODO: Remove Player');
