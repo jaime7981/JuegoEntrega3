@@ -6,7 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from django.contrib.auth.models import User
-from rest_framework.authtoken.models import Token
 from .serializers import PlayerSerializer, FriendRequestsSerializer, RegisterSerializer, SentFriendRequestSerializer, FriendRequestsUsernameSerializer
 from .models import Player, FriendRequests
 
@@ -60,28 +59,27 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False)
     def acepted(self, request, *args, **kwargs):
         acepted = FriendRequests.objects.filter(acepted_request=True)
-        items = acepted.filter(sender_player=request.user.id) | acepted.filter(reciever_player=request.user.id)
+        player = Player.objects.get(user=request.user)
+        items = acepted.filter(sender_player=player) | acepted.filter(reciever_player=player)
         serializer = FriendRequestsUsernameSerializer(items, many=True)
-        logger.info(items)
         return Response(serializer.data)
 
     @action(methods=['get'], detail=False)
     def sent(self, request, *args, **kwargs):
-        items = FriendRequests.objects.filter(acepted_request=False).filter(sender_player=request.user.id)
+        player = Player.objects.get(user=request.user)
+        items = FriendRequests.objects.filter(acepted_request=False).filter(sender_player=player)
         serializer = FriendRequestsUsernameSerializer(items, many=True)
         return Response(serializer.data)
     
     @action(methods=['get'], detail=False)
     def recieved(self, request, *args, **kwargs):
-        items = FriendRequests.objects.filter(acepted_request=False).filter(reciever_player=request.user.id)
+        player = Player.objects.get(user=request.user)
+        items = FriendRequests.objects.filter(acepted_request=False).filter(reciever_player=player)
         serializer = FriendRequestsUsernameSerializer(items, many=True)
-        logger.info(items)
         return Response(serializer.data)
 
     @action(methods=['post'], detail=False)
     def send_friend_request_by_username(self, request):
-        #sender = Player.objects.get(user = User.objects.get(username = request.data['sender_player']))
-        #reciever = Player.objects.get(user = User.objects.get(username = request.data['reciever_player']))
         serializer = SentFriendRequestSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
