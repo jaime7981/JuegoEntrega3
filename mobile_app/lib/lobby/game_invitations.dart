@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../globals_vars.dart' as globals;
 import 'package:mobile_app/api/game_api.dart';
 import 'package:mobile_app/api/lobby_api.dart';
 

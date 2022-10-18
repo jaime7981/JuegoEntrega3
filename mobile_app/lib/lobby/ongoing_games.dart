@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/api/game_api.dart';
 import 'package:mobile_app/api/lobby_api.dart';
 
-import 'game_lobby.dart';
-
 class OngoingGamesView extends StatelessWidget {
   const OngoingGamesView({super.key});
 
