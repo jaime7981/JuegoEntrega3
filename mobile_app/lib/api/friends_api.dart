@@ -3,37 +3,41 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../globals_vars.dart' as globals;
 
-/* 
-// Class Format Example
-class Album {
+class FriendRequest {
   final int id;
-  final String title;
+  final int senderPlayer;
+  final int recieverPlayer;
+  final String senderUsername;
+  final String recieverUsername;
+  final bool aceptedRequest;
 
-  const Album({required this.id, required this.title});
+  const FriendRequest(
+      {required this.id,
+      required this.senderPlayer,
+      required this.recieverPlayer,
+      required this.senderUsername,
+      required this.recieverUsername,
+      required this.aceptedRequest});
 
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(
+  factory FriendRequest.fromJson(Map<String, dynamic> json) {
+    return FriendRequest(
       id: json['id'],
-      title: json['title'],
+      senderPlayer: json['sender_player'],
+      recieverPlayer: json['reciever_player'],
+      senderUsername: json['sender_username'],
+      recieverUsername: json['reciever_username'],
+      aceptedRequest: json['acepted_request'],
     );
   }
 }
-*/
 
-/*
-var response = await post(Uri.parse(url),
-    headers: {
-      "Accept": "application/json",
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: {
-      'username': username,
-      'password': password,
-    },
-    encoding: Encoding.getByName("utf-8"));
-*/
+List<FriendRequest> parseFriendRequest(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  return parsed
+      .map<FriendRequest>((json) => FriendRequest.fromJson(json))
+      .toList();
+}
 
-// API requests
 Future<http.Response> userFriendRequests() async {
   final response = await http.get(
     Uri.parse('${globals.baseApiUrl}/friend_requests/${globals.userId}/'),
@@ -178,39 +182,4 @@ Future<http.Response> userDataById(int userId) async {
   } else {
     throw Exception('Failed to get user.');
   }
-}
-
-class FriendRequest {
-  final int id;
-  final int senderPlayer;
-  final int recieverPlayer;
-  final String senderUsername;
-  final String recieverUsername;
-  final bool aceptedRequest;
-
-  const FriendRequest(
-      {required this.id,
-      required this.senderPlayer,
-      required this.recieverPlayer,
-      required this.senderUsername,
-      required this.recieverUsername,
-      required this.aceptedRequest});
-
-  factory FriendRequest.fromJson(Map<String, dynamic> json) {
-    return FriendRequest(
-      id: json['id'],
-      senderPlayer: json['sender_player'],
-      recieverPlayer: json['reciever_player'],
-      senderUsername: json['sender_username'],
-      recieverUsername: json['reciever_username'],
-      aceptedRequest: json['acepted_request'],
-    );
-  }
-}
-
-List<FriendRequest> parseFriendRequest(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-  return parsed
-      .map<FriendRequest>((json) => FriendRequest.fromJson(json))
-      .toList();
 }

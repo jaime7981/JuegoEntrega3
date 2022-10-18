@@ -21,8 +21,9 @@ class CreateGameSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        user = User.objects.get(id=validated_data['host'])
         game = Game.objects.create(
-            host=Player.objects.get(id=validated_data['host']),
+            host=Player.objects.get(user=user),
             game_state='S',
             name=validated_data['name'],
         )

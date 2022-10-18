@@ -3,7 +3,42 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../globals_vars.dart' as globals;
 
-// Falta crear endpoints en el backend
+class Lobby {
+  final int id;
+  final int game;
+  final int player;
+  final String playerState;
+  final int points;
+  final bool aceptedRequest;
+
+  const Lobby({
+    required this.id,
+    required this.game,
+    required this.player,
+    required this.playerState,
+    required this.points,
+    required this.aceptedRequest,
+  });
+
+  factory Lobby.fromJson(Map<String, dynamic> json) {
+    return Lobby(
+      id: json['id'],
+      game: json['game'],
+      player: json['player'],
+      playerState: json['player_state'],
+      points: json['points'],
+      aceptedRequest: json['acepted_request'],
+    );
+  }
+}
+
+List<Lobby> parseLobby(String responseBody) {
+  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  debugPrint(
+      parsed.map<Lobby>((json) => Lobby.fromJson(json)).toList().toString());
+  return parsed.map<Lobby>((json) => Lobby.fromJson(json)).toList();
+}
+
 Future<List<Lobby>> usersInLobby(int gameId) async {
   final response = await http.post(
     Uri.parse('${globals.baseApiUrl}/lobby/joined/'),
@@ -55,16 +90,16 @@ Future<List<Lobby>> recievedLobbyRequests() async {
   }
 }
 
-Future<http.Response> sendLobbyRequests(int gameId, String username) async {
+Future<http.Response> sendLobbyRequests(int gameId, int username) async {
   final response = await http.post(
-    Uri.parse('${globals.baseApiUrl}/lobby/send_lobby_request/'),
+    Uri.parse('${globals.baseApiUrl}/lobby/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
     },
     body: jsonEncode(<String, String>{
       'game': gameId.toString(),
-      'player': username,
+      'player': username.toString(),
       'player_state': 'W',
       'points': '0',
       'acepted_request': false.toString(),
@@ -73,6 +108,8 @@ Future<http.Response> sendLobbyRequests(int gameId, String username) async {
   debugPrint(response.body);
   if (response.statusCode == 200) {
     debugPrint(jsonDecode(response.body).toString());
+    return response;
+  } else if (response.statusCode == 201) {
     return response;
   } else {
     debugPrint(response.statusCode.toString());
@@ -126,77 +163,3 @@ Future<void> deleteLobby(int lobyId) async {
     throw Exception('Failed to get friend requests.');
   }
 }
-
-class Lobby {
-  final int id;
-  final int game;
-  final int player;
-  final String playerState;
-  final int points;
-  final bool aceptedRequest;
-
-  const Lobby({
-    required this.id,
-    required this.game,
-    required this.player,
-    required this.playerState,
-    required this.points,
-    required this.aceptedRequest,
-  });
-
-  factory Lobby.fromJson(Map<String, dynamic> json) {
-    return Lobby(
-      id: json['id'],
-      game: json['game'],
-      player: json['player'],
-      playerState: json['player_state'],
-      points: json['points'],
-      aceptedRequest: json['acepted_request'],
-    );
-  }
-}
-
-List<Lobby> parseLobby(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-  debugPrint(
-      parsed.map<Lobby>((json) => Lobby.fromJson(json)).toList().toString());
-  return parsed.map<Lobby>((json) => Lobby.fromJson(json)).toList();
-}
-
-
-/*
-class LobbyRequest {
-  final int id;
-  final int senderPlayer;
-  final int recieverPlayer;
-  final String senderUsername;
-  final String recieverUsername;
-  final bool aceptedRequest;
-
-  const LobbyRequest(
-      {required this.id,
-      required this.senderPlayer,
-      required this.recieverPlayer,
-      required this.senderUsername,
-      required this.recieverUsername,
-      required this.aceptedRequest});
-
-  factory LobbyRequest.fromJson(Map<String, dynamic> json) {
-    return LobbyRequest(
-      id: json['id'],
-      senderPlayer: json['sender_player'],
-      recieverPlayer: json['reciever_player'],
-      senderUsername: json['sender_username'],
-      recieverUsername: json['reciever_username'],
-      aceptedRequest: json['acepted_request'],
-    );
-  }
-}
-
-List<LobbyRequest> parseLobbyRequest(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-  return parsed
-      .map<LobbyRequest>((json) => LobbyRequest.fromJson(json))
-      .toList();
-}
-*/

@@ -8,8 +8,6 @@ import 'login/login.dart';
 import 'home/home.dart';
 import 'home/friends.dart';
 
-import 'lobby/gameRoom.dart';
-import 'lobby/listRoom.dart';
 import 'lobby/my_games.dart';
 import 'lobby/create_game.dart';
 import 'lobby/game_invitations.dart';
@@ -30,8 +28,6 @@ class EntryApp extends StatelessWidget {
         '/register': (context) => const RegisterView(),
         '/home': (context) => const HomeView(),
         '/friends': (context) => const FriendsView(),
-        '/gameRoom': (context) => const GameRoomView(),
-        '/listRoom': (context) => const ListRoomView(),
         '/my_games': (context) => const MyGamesView(),
         '/ongoing_games': (context) => const OngoingGamesView(),
         '/create_game': (context) => const CreateGameView(),

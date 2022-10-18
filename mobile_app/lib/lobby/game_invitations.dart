@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../globals_vars.dart' as globals;
 import 'package:mobile_app/api/game_api.dart';
 import 'package:mobile_app/api/lobby_api.dart';
 
@@ -34,7 +33,7 @@ class _GameInvitationsState extends State<GameInvitationsWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text('TODO: SOLVED'),
+          const Text('Invitations'),
           FutureBuilder<List<Lobby>>(
             future: recievedLobbyRequests(),
             builder: (context, snapshot) {
@@ -82,7 +81,7 @@ class LobbyList extends StatelessWidget {
             onPressed: () {
               acceptLobby(item.id, item.game, item.player).then((value) => {
                     Navigator.of(context, rootNavigator: true)
-                        .pushNamed("/game_lobby", arguments: {
+                        .pushReplacementNamed("/game_lobby", arguments: {
                       'game': Game(
                           id: item.game,
                           gameState: item.playerState,
@@ -95,9 +94,9 @@ class LobbyList extends StatelessWidget {
           ),
           ElevatedButton(
             onPressed: () {
-              deleteLobby(item.game).then((value) => {
+              deleteLobby(item.id).then((value) => {
                     Navigator.of(context, rootNavigator: true)
-                        .pushReplacementNamed("/ongoing_games")
+                        .pushReplacementNamed("/game_invitations")
                   });
             },
             child: const Text('Refuse'),

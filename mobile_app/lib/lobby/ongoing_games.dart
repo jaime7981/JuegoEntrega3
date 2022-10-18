@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app/api/game_api.dart';
 import 'package:mobile_app/api/lobby_api.dart';
 
-import 'game_lobby.dart';
-
 class OngoingGamesView extends StatelessWidget {
   const OngoingGamesView({super.key});
 
@@ -36,8 +34,6 @@ class _OngoingGamesState extends State<OngoingGamesWidget> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text(
-              "TODO: SOLVED (although, it shouldn't allow you to accept a game here... only enter the lobby and leaving it."),
           const Text('My lobbies'),
           FutureBuilder<List<Lobby>>(
             future: aceptedLobbyRequests(),

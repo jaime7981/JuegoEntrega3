@@ -41,10 +41,7 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
           Text(widget.game.name),
-          Text('Debug: Game Id ${widget.arguments["game"].id}'),
-          Text('Debug: arguments ${widget.arguments.toString()}'),
-          Text('Debug: arguments ${widget.arguments.keys.toString()}'),
-          Text('Debug: arguments ${widget.arguments["game"].toString()}'),
+          Text('Game Id ${widget.arguments["game"].id}'),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
@@ -85,7 +82,9 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                       child: Text('An error has occurred!'),
                     );
                   } else if (snapshot.hasData) {
-                    return FriendRequestsList(friendRequests: snapshot.data!);
+                    return FriendRequestsList(
+                        friendRequests: snapshot.data!,
+                        gameId: widget.arguments["game"].id);
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),
@@ -106,9 +105,11 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
 }
 
 class FriendRequestsList extends StatelessWidget {
-  const FriendRequestsList({super.key, required this.friendRequests});
+  const FriendRequestsList(
+      {super.key, required this.friendRequests, required this.gameId});
 
   final List<FriendRequest> friendRequests;
+  final int gameId;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +123,7 @@ class FriendRequestsList extends StatelessWidget {
             Text('Username: ${item.recieverUsername}'),
             ElevatedButton(
               onPressed: () {
-                sendLobbyRequests(1, item.recieverUsername);
+                sendLobbyRequests(gameId, item.recieverPlayer);
               },
               child: const Text('Invite'),
             ),
@@ -136,7 +137,7 @@ class FriendRequestsList extends StatelessWidget {
             Text('Username: ${item.senderUsername}'),
             ElevatedButton(
               onPressed: () {
-                sendLobbyRequests(1, item.senderUsername);
+                sendLobbyRequests(gameId, item.senderPlayer);
               },
               child: const Text('Invite'),
             ),
@@ -161,14 +162,31 @@ class LobbyList extends StatelessWidget {
   Widget build(BuildContext context) {
     var widgetList = [];
     for (var item in lobbies) {
-      if (item.aceptedRequest == true && globals.userId == item.player) {
+      if (item.aceptedRequest == true) {
         widgetList.add(Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('Username: ${item.player}'),
+            Text('user: ${item.player} '),
             ElevatedButton(
               onPressed: () {
-                debugPrint('TODO: Remove Player');
+                deleteLobby(item.id).then((value) => {
+                      if (item.player == globals.userId)
+                        {
+                          Navigator.of(context, rootNavigator: true)
+                              .pushReplacementNamed("/ongoing_games")
+                        }
+                      else
+                        {
+                          Navigator.of(context, rootNavigator: true)
+                              .pushReplacementNamed("/game_lobby", arguments: {
+                            'game': Game(
+                                id: item.game,
+                                gameState: item.playerState,
+                                name: item.aceptedRequest.toString(),
+                                host: item.player)
+                          })
+                        }
+                    });
               },
               child: const Text('Kick'),
             ),

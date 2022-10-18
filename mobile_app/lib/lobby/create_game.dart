@@ -114,7 +114,7 @@ class FriendRequestsList extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 debugPrint('TODO: Invite Friend');
-                sendLobbyRequests(game, item.recieverUsername);
+                sendLobbyRequests(game, item.recieverPlayer);
               },
               child: const Text('Invite'),
             ),
@@ -128,8 +128,7 @@ class FriendRequestsList extends StatelessWidget {
             Text('Username: ${item.senderUsername}'),
             ElevatedButton(
               onPressed: () {
-                debugPrint('TODO: Invite Friend');
-                sendLobbyRequests(game, item.recieverUsername);
+                sendLobbyRequests(game, item.recieverPlayer);
               },
               child: const Text('Invite'),
             ),

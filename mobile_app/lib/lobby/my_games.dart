@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/api/game_api.dart';
 
-import 'game_lobby.dart';
-
 class MyGamesView extends StatelessWidget {
   const MyGamesView({super.key});
 
