@@ -84,6 +84,13 @@ class RoundViewSet(viewsets.ModelViewSet):
     queryset = Round.objects.all()
     serializer_class = RoundSerializer
 
+    @action(methods=['post'], detail=False)
+    def random_question(self, request, *args, **kwargs):
+        serializer = CreateRoundSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data)
+
 class AnswerViewSet(viewsets.ModelViewSet):
     authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]

@@ -1,3 +1,4 @@
+from random import randint, random
 from rest_framework import serializers
 from .models import Game, Lobby, Question, Round, Answer
 from user_control.models import Player
@@ -34,6 +35,14 @@ class CreateGameSerializer(serializers.ModelSerializer):
                              points=0,
                              acepted_request=True)
         lobby.save()
+        question = Question.objects.all()
+        count = Question.objects.count()
+        round = Round.objects.create(
+            game=game,
+            question=question[randint(count - 1)],
+            round_state ='S',
+        )
+        round.save()
         return game
 
 class LobbySerializer(serializers.ModelSerializer):
@@ -64,9 +73,7 @@ class CreateLobbySerializer(serializers.ModelSerializer):
             acepted_request = False
         )
         lobby.save()
-        return lobby
-
-        
+        return lobby    
 
 class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -77,6 +84,27 @@ class RoundSerializer(serializers.ModelSerializer):
     class Meta:
         model = Round
         fields = '__all__'
+
+class CreateRoundSerializer(serializers.ModelSerializer):
+    game = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = Round
+        fields = ['game']
+
+    def validate(self, attrs):
+        return attrs
+
+    def create(self, validated_data):
+        question = Question.objects.all()
+        count = Question.objects.count()
+        round = Round.objects.create(
+            game=Game.objects.get(id=validated_data['game']),
+            question=question[randint(count - 1)],
+            round_state ='S',
+        )
+        round.save()
+        return round
 
 class AnswerSerializer(serializers.ModelSerializer):
     class Meta:

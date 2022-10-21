@@ -5,9 +5,8 @@ import 'package:mobile_app/api/game_api.dart';
 import 'package:mobile_app/api/friends_api.dart';
 
 class GameLobbyView extends StatelessWidget {
-  const GameLobbyView({super.key, required this.game});
+  const GameLobbyView({super.key});
   static const String _title = 'Lobby';
-  final Game game;
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +16,14 @@ class GameLobbyView extends StatelessWidget {
       title: _title,
       home: Scaffold(
         appBar: AppBar(title: const Text(_title)),
-        body: GameLobbyWidget(game: game, arguments: arguments),
+        body: GameLobbyWidget(arguments: arguments),
       ),
     );
   }
 }
 
 class GameLobbyWidget extends StatefulWidget {
-  const GameLobbyWidget(
-      {super.key, required this.game, required this.arguments});
-  final Game game;
+  const GameLobbyWidget({super.key, required this.arguments});
   final Map<dynamic, dynamic> arguments;
 
   @override
@@ -34,13 +31,15 @@ class GameLobbyWidget extends StatefulWidget {
 }
 
 class _GameLobbyWidgetState extends State<GameLobbyWidget> {
+  var _playerList = [];
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-          Text(widget.game.name),
+          Text(widget.arguments["game"].name),
           Text('Game Id ${widget.arguments["game"].id}'),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -58,6 +57,7 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                           child: Text('An error has occurred!'),
                         );
                       } else if (snapshot.hasData) {
+                        _playerList = snapshot.data!;
                         return LobbyList(lobbies: snapshot.data!);
                       } else {
                         return const Center(
@@ -96,7 +96,11 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
           ),
           ElevatedButton(
             onPressed: () {
-              debugPrint('TODO: Start rounds');
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed("/create_ans", arguments: {
+                'game': widget.arguments["game"],
+                'players': _playerList
+              });
             },
             child: const Text('Start Game'),
           ),
