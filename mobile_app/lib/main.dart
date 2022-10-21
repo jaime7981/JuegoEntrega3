@@ -13,6 +13,7 @@ import 'package:mobile_app/lobby/game_lobby.dart';
 import 'package:mobile_app/lobby/ongoing_games.dart';
 
 import 'package:mobile_app/game/create_ans.dart';
+import 'package:mobile_app/game/choose_ans.dart';
 
 void main() => runApp(const EntryApp());
 
@@ -35,6 +36,7 @@ class EntryApp extends StatelessWidget {
         '/game_invitations': (context) => const GameInvitationsView(),
         '/game_lobby': (context) => const GameLobbyView(),
         '/create_ans': (context) => const CreateAnsView(),
+        '/choose_ans': (context) => const ChooseAnsView(),
       },
     );
   }

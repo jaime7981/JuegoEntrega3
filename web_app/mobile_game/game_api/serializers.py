@@ -39,7 +39,7 @@ class CreateGameSerializer(serializers.ModelSerializer):
         count = Question.objects.count()
         round = Round.objects.create(
             game=game,
-            question=question[randint(count - 1)],
+            question=question[randint(0, count - 1)],
             round_state ='S',
         )
         round.save()
@@ -100,7 +100,7 @@ class CreateRoundSerializer(serializers.ModelSerializer):
         count = Question.objects.count()
         round = Round.objects.create(
             game=Game.objects.get(id=validated_data['game']),
-            question=question[randint(count - 1)],
+            question=question[randint(0, count - 1)],
             round_state ='S',
         )
         round.save()
