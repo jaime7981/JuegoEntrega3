@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/api/lobby_api.dart';
+import 'package:mobile_app/api/round_api.dart';
 import '../globals_vars.dart' as globals;
 import 'package:mobile_app/api/game_api.dart';
 import 'package:mobile_app/api/friends_api.dart';
@@ -96,21 +97,27 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/create_ans", arguments: {
-                'game': widget.arguments["game"],
-                'players': _playerList
-              });
+              roundByGameId(widget.arguments["game"].id).then((value) => {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed("/create_ans", arguments: {
+                      'game': widget.arguments["game"],
+                      'players': _playerList,
+                      'round': value[0]
+                    })
+                  });
             },
             child: const Text('Add Answer'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/choose_ans", arguments: {
-                'game': widget.arguments["game"],
-                'players': _playerList
-              });
+              roundByGameId(widget.arguments["game"].id).then((value) => {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed("/choose_ans", arguments: {
+                      'game': widget.arguments["game"],
+                      'players': _playerList,
+                      'round': value
+                    })
+                  });
             },
             child: const Text('Respond Answer'),
           ),

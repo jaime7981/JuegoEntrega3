@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/answer_api.dart';
 
 class CreateAnsView extends StatelessWidget {
   const CreateAnsView({super.key});
@@ -56,22 +57,23 @@ class _CreateAnsWidgetState extends State<CreateAnsWidget> {
                   },
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    debugPrint(widget.arguments["round"].toString());
+                    createAnswersByRoundId(
+                            widget.arguments["round"].id, answerController.text)
+                        .then((value) =>
+                            {Navigator.of(context, rootNavigator: true).pop()});
+                  },
                   child: const Text('Submit Answer'),
                 ),
               ],
             ),
           ),
-          const Text('test_user4 responds'),
-          const Text('Correct Answers:'),
           const Text('Other Answers'),
           const Text('test_user1: Answers Example'),
           const Text('test_user2: Answers Example'),
           const Text('test_user3: Waiting'),
-          Text('${widget.arguments.keys}'),
-          Text('${widget.arguments.values}'),
-          Text('${widget.arguments['game']}'),
-          Text('${widget.arguments['players']}'),
+          const Text('test_user4: Responds'),
         ]));
   }
 }
