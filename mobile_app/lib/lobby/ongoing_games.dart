@@ -51,33 +51,6 @@ class _OngoingGamesState extends State<OngoingGamesWidget> {
               }
             },
           ),
-          /*
-          //Example
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context, rootNavigator: true)
-                      .pushNamed("/game_lobby");
-                },
-                child: const Text('example lobby'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('TODO: Accept Game');
-                },
-                child: const Text('Accept'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  debugPrint('TODO: Refuse Game');
-                },
-                child: const Text('Refuse'),
-              ),
-            ],
-          )
-          */
         ],
       ),
     );
@@ -96,24 +69,6 @@ class LobbyList extends StatelessWidget {
       widgetList.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-          /*
-          ElevatedButton(
-            onPressed: () {
-              
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GameLobbyView(
-                      game: findGamebyId(item.game)
-                    ),
-                  ));
-              //Navigator.of(context, rootNavigator: true)
-              //    .pushNamed("/game_lobby");
-            },
-            
-            child: const Text('Enter'),
-            
-          ),*/
           ElevatedButton(
             onPressed: () {
               Navigator.of(context, rootNavigator: true)
