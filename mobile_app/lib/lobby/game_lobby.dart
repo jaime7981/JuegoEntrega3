@@ -102,7 +102,17 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                 'players': _playerList
               });
             },
-            child: const Text('Start Game'),
+            child: const Text('Add Answer'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed("/choose_ans", arguments: {
+                'game': widget.arguments["game"],
+                'players': _playerList
+              });
+            },
+            child: const Text('Respond Answer'),
           ),
         ]));
   }

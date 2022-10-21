@@ -85,6 +85,13 @@ class RoundViewSet(viewsets.ModelViewSet):
     serializer_class = RoundSerializer
 
     @action(methods=['post'], detail=False)
+    def round_by_game(self, request, *args, **kwargs):
+        game = Game.objects.get(id = request.data['game_id'])
+        round = Round.objects.filter(game=game)
+        serializer = RoundSerializer(round, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['post'], detail=False)
     def random_question(self, request, *args, **kwargs):
         serializer = CreateRoundSerializer(data=request.data)
         if serializer.is_valid():
@@ -97,3 +104,18 @@ class AnswerViewSet(viewsets.ModelViewSet):
 
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
+
+    @action(methods=['post'], detail=False)
+    def round_answers_by_game(self, request, *args, **kwargs):
+        game = Game.objects.get(id = request.data['game_id'])
+        round = Round.objects.get(game=game)
+        answers = Answer.objects.filter(round=round)
+        serializer = AnswerSerializer(answers, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['post'], detail=False)
+    def round_answers_by_round(self, request, *args, **kwargs):
+        round = Round.objects.get(id = request.data['round_id'])
+        answers = Answer.objects.filter(round=round)
+        serializer = AnswerSerializer(answers, many=True)
+        return Response(serializer.data)
