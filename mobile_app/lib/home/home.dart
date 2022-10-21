@@ -28,9 +28,10 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
+    return SingleChildScrollView(
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
           ElevatedButton(
             onPressed: () {
               Navigator.of(context, rootNavigator: true).pushNamed("/friends");
@@ -66,6 +67,6 @@ class _HomeWidgetState extends State<HomeWidget> {
             },
             child: const Text('Logout'),
           ),
-        ]);
+        ]));
   }
 }

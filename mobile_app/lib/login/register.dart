@@ -34,7 +34,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
+    return SingleChildScrollView(
+        child: Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,13 +84,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                // Validate if passwords matches
-                var data = {
-                  'username': usernameController.text,
-                  'password': passwordController.text,
-                  'confirmation': confirmationController.text
-                };
-                debugPrint('form data: $data');
                 if (passwordController.text == confirmationController.text) {
                   debugPrint('password matches');
                   createPlayer(usernameController.text, passwordController.text,
@@ -111,6 +105,6 @@ class _RegisterWidgetState extends State<RegisterWidget> {
           ),
         ],
       ),
-    );
+    ));
   }
 }

@@ -35,7 +35,8 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
+    return SingleChildScrollView(
+        child: Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,6 +99,6 @@ class _LoginWidgetState extends State<LoginWidget> {
           ),
         ],
       ),
-    );
+    ));
   }
 }
