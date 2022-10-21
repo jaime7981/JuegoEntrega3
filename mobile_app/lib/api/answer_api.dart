@@ -8,14 +8,14 @@ class Answer {
   final int round;
   final int player;
   final String answerState;
-  final String playerSnswer;
+  final String playerAnswer;
 
   const Answer({
     required this.id,
     required this.round,
     required this.player,
     required this.answerState,
-    required this.playerSnswer,
+    required this.playerAnswer,
   });
 
   factory Answer.fromJson(Map<String, dynamic> json) {
@@ -24,7 +24,7 @@ class Answer {
       round: json['round'],
       player: json['player'],
       answerState: json['answer_state'],
-      playerSnswer: json['player_answer'],
+      playerAnswer: json['player_answer'],
     );
   }
 }
@@ -34,9 +34,36 @@ List<Answer> parseAnswer(String responseBody) {
   return parsed.map<Answer>((json) => Answer.fromJson(json)).toList();
 }
 
-Future<List<Answer>> roundByGameId(int gameId) async {
+Future<List<Answer>> createAnswersByRoundId(int roundId, String answer) async {
   final response = await http.post(
-    Uri.parse('${globals.baseApiUrl}/answer/round_answers_by_game'),
+    Uri.parse('${globals.baseApiUrl}/answer/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+    body: jsonEncode(<String, String>{
+      'round': roundId.toString(),
+      'player': globals.userId.toString(),
+      'answer_state': 'R',
+      'player_answer': answer
+    }),
+  );
+
+  debugPrint(response.body.toString());
+  if (response.statusCode == 200) {
+    debugPrint(response.body.toString());
+    return parseAnswer(response.body);
+  } else if (response.statusCode == 201) {
+    debugPrint(response.body.toString());
+    return parseAnswer('[${response.body}]');
+  } else {
+    throw Exception('Failed to get answers by game id.');
+  }
+}
+
+Future<List<Answer>> roundAnswersByGameId(int gameId) async {
+  final response = await http.post(
+    Uri.parse('${globals.baseApiUrl}/answer/round_answers_by_game/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -48,17 +75,19 @@ Future<List<Answer>> roundByGameId(int gameId) async {
 
   debugPrint(response.body.toString());
   if (response.statusCode == 200) {
+    debugPrint(response.body.toString());
     return parseAnswer(response.body);
   } else if (response.statusCode == 201) {
+    debugPrint(response.body.toString());
     return parseAnswer(response.body);
   } else {
-    throw Exception('Failed to create game.');
+    throw Exception('Failed to get answers by game id.');
   }
 }
 
-Future<List<Answer>> roundByRoundId(int roundId) async {
+Future<List<Answer>> roundAnswersByRoundId(int roundId) async {
   final response = await http.post(
-    Uri.parse('${globals.baseApiUrl}/answer/round_answers_by_round'),
+    Uri.parse('${globals.baseApiUrl}/answer/round_answers_by_round/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -74,7 +103,7 @@ Future<List<Answer>> roundByRoundId(int roundId) async {
   } else if (response.statusCode == 201) {
     return parseAnswer(response.body);
   } else {
-    throw Exception('Failed to create game.');
+    throw Exception('Failed to get answers by round id.');
   }
 }
 

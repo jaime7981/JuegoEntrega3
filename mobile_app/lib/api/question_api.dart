@@ -1,10 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../globals_vars.dart' as globals;
 
 class Question {
   final int id;
-  final int question;
+  final String question;
   final String correctAnswer;
   final String ans_1;
   final String ans_2;
@@ -49,7 +50,8 @@ Future<List<Question>> findQuestionById(int questionId) async {
   );
 
   if (response.statusCode == 200) {
-    return parseQuestion(response.body);
+    debugPrint('[${response.body}]');
+    return parseQuestion('[${response.body}]');
   } else {
     throw Exception('Failed to get question.');
   }

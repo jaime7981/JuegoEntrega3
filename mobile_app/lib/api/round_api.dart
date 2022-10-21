@@ -33,7 +33,7 @@ List<Round> parseRound(String responseBody) {
 
 Future<List<Round>> roundByGameId(int gameId) async {
   final response = await http.post(
-    Uri.parse('${globals.baseApiUrl}/round/round_by_game'),
+    Uri.parse('${globals.baseApiUrl}/round/round_by_game/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
@@ -49,7 +49,8 @@ Future<List<Round>> roundByGameId(int gameId) async {
   } else if (response.statusCode == 201) {
     return parseRound(response.body);
   } else {
-    throw Exception('Failed to create game.');
+    debugPrint(response.body);
+    throw Exception('Failed to get round by game id.');
   }
 }
 
