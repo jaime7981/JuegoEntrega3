@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../globals_vars.dart' as globals;
 import 'package:mobile_app/api/friends_api.dart';
+import '../globals_vars.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class FriendsView extends StatelessWidget {
   const FriendsView({super.key});
@@ -11,10 +13,15 @@ class FriendsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
-      home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
-        body: const FriendsWidget(),
-      ),
+      home: Container(
+          decoration: new BoxDecoration(
+              image: new DecorationImage(
+                  image: new AssetImage('assets/background3.png'),
+                  fit: BoxFit.cover)),
+          child: Scaffold(
+            body: FriendsWidget(),
+            backgroundColor: Colors.transparent,
+          )),
     );
   }
 }
@@ -32,102 +39,138 @@ class _FriendsWidgetState extends State<FriendsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-          Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                TextFormField(
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                    hintText: 'Username',
-                    labelText: 'Username',
-                  ),
-                  validator: (String? value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      sendFriendRequests(usernameController.text).then((value) {
-                        debugPrint(value.body.toString());
-                        Navigator.of(context, rootNavigator: true)
-                            .pushReplacementNamed("/friends");
-                      }).catchError((error) {
-                        debugPrint(error.toString());
-                      });
-                    }
-                  },
-                  child: const Text('Send Friend Request'),
-                ),
-              ],
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+            color: Colors.white,
+            image: DecorationImage(
+                image: AssetImage("assets/background3.png"),
+                fit: BoxFit.cover)),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          Stack(alignment: Alignment.center, children: [
+            Container(
+              child: Column(
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.width * .07),
+                  Text("Friends",
+                      style: GoogleFonts.oswald(
+                        textStyle: TextStyle(fontSize: 44),
+                      )),
+                ],
+              ),
+              width: double.infinity,
+              height: 150,
+              decoration: const BoxDecoration(
+                  color: kPrimaryColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  )),
             ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const Text('Acepted Friend Request'),
-              FutureBuilder<List<FriendRequest>>(
-                future: userAceptedFriendRequests(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('An error has occurred!'),
-                    );
-                  } else if (snapshot.hasData) {
-                    return FriendRequestsList(friendRequests: snapshot.data!);
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
+            Row(
+              children: [
+                ElevatedButton.icon(
+                  label: Text("Back"),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed("/home");
+                  },
+                  style: ElevatedButton.styleFrom(
+                    primary: kPrimaryColor,
+                  ),
+                ),
+                Expanded(child: Container()),
+              ],
+            )
+          ]),
+          Column(children: <Widget>[
+            const Text('Accepted Friend Request'),
+            FutureBuilder<List<FriendRequest>>(
+              future: userAceptedFriendRequests(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('An error has occurred!'),
+                  );
+                } else if (snapshot.hasData) {
+                  return FriendRequestsList(friendRequests: snapshot.data!);
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+            const Text('Sent Friend Request'),
+            FutureBuilder<List<FriendRequest>>(
+              future: userSentFriendRequests(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('An error has occurred!'),
+                  );
+                } else if (snapshot.hasData) {
+                  return FriendRequestsList(friendRequests: snapshot.data!);
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+            const Text('Recieved Friend Request'),
+            FutureBuilder<List<FriendRequest>>(
+              future: userRecievedFriendRequests(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
+                    child: Text('An error has occurred!'),
+                  );
+                } else if (snapshot.hasData) {
+                  return FriendRequestsList(friendRequests: snapshot.data!);
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+            TextFormField(
+              controller: usernameController,
+              decoration: const InputDecoration(
+                hintText: 'Username',
+                labelText: 'Username',
               ),
-              const Text('Sent Friend Request'),
-              FutureBuilder<List<FriendRequest>>(
-                future: userSentFriendRequests(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('An error has occurred!'),
-                    );
-                  } else if (snapshot.hasData) {
-                    return FriendRequestsList(friendRequests: snapshot.data!);
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-              const Text('Recieved Friend Request'),
-              FutureBuilder<List<FriendRequest>>(
-                future: userRecievedFriendRequests(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('An error has occurred!'),
-                    );
-                  } else if (snapshot.hasData) {
-                    return FriendRequestsList(friendRequests: snapshot.data!);
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-        ]));
+              validator: (String? value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  sendFriendRequests(usernameController.text).then((value) {
+                    debugPrint(value.body.toString());
+                    Navigator.of(context, rootNavigator: true)
+                        .pushReplacementNamed("/friends");
+                  }).catchError((error) {
+                    debugPrint(error.toString());
+                  });
+                }
+              },
+              child: const Text('Send Friend Request'),
+            ),
+          ]),
+        ]),
+      ),
+    );
   }
 }
 
