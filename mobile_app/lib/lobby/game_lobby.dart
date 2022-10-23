@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/answer_api.dart';
 import 'package:mobile_app/api/lobby_api.dart';
 import 'package:mobile_app/api/round_api.dart';
 import '../globals_vars.dart' as globals;
@@ -40,6 +41,8 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
+          const Text('Game Status (TODO: Add Status for game and player)'),
+          const Text('Like who responds or who is pending for answer'),
           Text(widget.arguments["game"].name),
           Text('Game Id ${widget.arguments["game"].id}'),
           Column(
@@ -106,7 +109,7 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                     })
                   });
             },
-            child: const Text('Add Answer'),
+            child: const Text('Add Answer (DEBUG)'),
           ),
           ElevatedButton(
             onPressed: () {
@@ -119,7 +122,25 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                     })
                   });
             },
-            child: const Text('Respond Answer'),
+            child: const Text('Respond Answer (DEBUG)'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              roundAnswersByGameId(widget.arguments['game'].id)
+                  .then((answersValue) => {
+                        roundByGameId(widget.arguments["game"].id)
+                            .then((value) => {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed("/main_game", arguments: {
+                                    'game': widget.arguments["game"],
+                                    'players': _playerList,
+                                    'round': value,
+                                    'answers': answersValue,
+                                  })
+                                })
+                      });
+            },
+            child: const Text('Enter Game'),
           ),
         ]));
   }

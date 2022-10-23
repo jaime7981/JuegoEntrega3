@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/game/main_game.dart';
 import 'start_menu/start.dart';
 
 import 'package:mobile_app/login/register.dart';
@@ -65,6 +66,7 @@ class EntryApp extends StatelessWidget {
         '/game_lobby': (context) => const GameLobbyView(),
         '/create_ans': (context) => const CreateAnsView(),
         '/choose_ans': (context) => const ChooseAnsView(),
+        '/main_game': (context) => const MainGameView(),
       },
     );
   }
