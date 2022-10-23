@@ -91,7 +91,11 @@ class _HomeWidgetState extends State<HomeWidget> {
                   size: 30,
                   color: Colors.white,
                 ),
+
                 onPressed: () {
+                  globals.userToken = '';
+                  globals.userId = 0;
+                  globals.username = '';
                   Navigator.of(context, rootNavigator: true).pop();
                 },
                 style: ElevatedButton.styleFrom(
