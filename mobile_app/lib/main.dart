@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'start_menu/start.dart';
 
 import 'package:mobile_app/login/register.dart';
 import 'package:mobile_app/login/login.dart';
@@ -11,9 +12,10 @@ import 'package:mobile_app/lobby/create_game.dart';
 import 'package:mobile_app/lobby/game_invitations.dart';
 import 'package:mobile_app/lobby/game_lobby.dart';
 import 'package:mobile_app/lobby/ongoing_games.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/game/create_ans.dart';
 import 'package:mobile_app/game/choose_ans.dart';
+import 'package:mobile_app/globals_vars.dart';
 
 void main() => runApp(const EntryApp());
 
@@ -25,7 +27,33 @@ class EntryApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Game Entry App',
-      home: const LoginView(),
+      home: const WelcomeScreen(),
+      theme: ThemeData(
+        textTheme: GoogleFonts.poppinsTextTheme(Theme.of(context).textTheme),
+        primaryColor: kPrimaryColor,
+        scaffoldBackgroundColor: Colors.white,
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 0,
+            backgroundColor: kPrimaryColor,
+            shape: const StadiumBorder(),
+            maximumSize: const Size(double.infinity, 56),
+            minimumSize: const Size(double.infinity, 56),
+          ),
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          filled: true,
+          fillColor: kPrimaryLightColor,
+          iconColor: kPrimaryColor,
+          prefixIconColor: kPrimaryColor,
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: defaultPadding, vertical: defaultPadding),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(30)),
+            borderSide: BorderSide.none,
+          ),
+        ),
+      ),
       routes: <String, WidgetBuilder>{
         '/register': (context) => const RegisterView(),
         '/home': (context) => const HomeView(),

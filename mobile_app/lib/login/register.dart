@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import '../api/login_api.dart';
+import 'background.dart';
+import 'package:mobile_app/responsive.dart';
+import 'components/image_register.dart';
+import 'components/account_text.dart';
+import '../globals_vars.dart';
+import 'login.dart';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
@@ -8,12 +14,57 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
-        body: const RegisterWidget(),
+    return Background(
+      child: SingleChildScrollView(
+        child: Responsive(
+          mobile: const MobileRegisterScreen(),
+          desktop: Row(
+            children: [
+              const Expanded(
+                child: RegisterWidget(),
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    SizedBox(
+                      width: 450,
+                      child: RegisterWidget(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
+    );
+    ;
+  }
+}
+
+class MobileRegisterScreen extends StatelessWidget {
+  const MobileRegisterScreen({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        const RegisterScreenTopImage(),
+        Row(
+          children: const [
+            Spacer(),
+            Expanded(
+              flex: 8,
+              child: RegisterWidget(),
+            ),
+            Spacer(),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -34,8 +85,7 @@ class _RegisterWidgetState extends State<RegisterWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Form(
+    return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -53,7 +103,9 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               return null;
             },
           ),
-          TextField(
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+            child: TextFormField(
             controller: passwordController,
             obscureText: _isObscure,
             decoration: InputDecoration(
@@ -66,8 +118,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                         _isObscure = !_isObscure;
                       });
                     })),
-          ),
-          TextField(
+          ),),
+          TextFormField(
             controller: confirmationController,
             obscureText: _isObscure,
             decoration: InputDecoration(
@@ -81,9 +133,22 @@ class _RegisterWidgetState extends State<RegisterWidget> {
                       });
                     })),
           ),
-          ElevatedButton(
-            onPressed: () {
+          const Padding(
+            padding: const EdgeInsets.symmetric(vertical: defaultPadding),
+            ),
+          const SizedBox(height: defaultPadding),
+          Hero(
+            tag: "register_btn",
+            child: ElevatedButton(
+              onPressed: () {
               if (_formKey.currentState!.validate()) {
+                // Validate if passwords matches
+                var data = {
+                  'username': usernameController.text,
+                  'password': passwordController.text,
+                  'confirmation': confirmationController.text
+                };
+                debugPrint('form data: $data');
                 if (passwordController.text == confirmationController.text) {
                   debugPrint('password matches');
                   createPlayer(usernameController.text, passwordController.text,
@@ -96,15 +161,28 @@ class _RegisterWidgetState extends State<RegisterWidget> {
               }
             },
             child: const Text('Register'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pop();
-            },
-            child: const Text('Login'),
-          ),
+            ),
+            
+                            
+            ),
+          AlreadyHaveAnAccountCheck(
+            login: false,
+            press: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) {
+                    return LoginView();
+                  },
+                )
+              );
+            }
+          )
+                     
+
+
         ],
       ),
-    ));
+    );
   }
 }

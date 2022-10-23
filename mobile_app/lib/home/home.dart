@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import '../globals_vars.dart' as globals;
+import '../globals_vars.dart';
+import 'friends.dart';
+import 'buttons.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -10,10 +13,15 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: _title,
-      home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
-        body: const HomeWidget(),
-      ),
+      home: Container(
+          decoration: new BoxDecoration(
+              image: new DecorationImage(
+                  image: new AssetImage('assets/background3.png'),
+                  fit: BoxFit.cover)),
+          child: Scaffold(
+            body: HomeWidget(),
+            backgroundColor: Colors.transparent,
+          )),
     );
   }
 }
@@ -28,45 +36,109 @@ class HomeWidget extends StatefulWidget {
 class _HomeWidgetState extends State<HomeWidget> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/friends");
-            },
-            child: const Text('Friend List'),
+    return Scaffold(
+        body: Container(
+      decoration: const BoxDecoration(
+          color: Colors.white,
+          image: DecorationImage(
+              image: AssetImage("assets/background3.png"),
+              fit: BoxFit.cover)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center, children: [
+        Stack(alignment: Alignment.center, children: [
+          Container(
+            width: double.infinity,
+            height: 150,
+            
+            child: Center(
+           
+              child: Image.asset(
+               
+                "assets/logo_lobby3.png",
+              ),
+            ),
+            decoration: const BoxDecoration(
+                color: kPrimaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight: Radius.circular(20),
+                )),
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true).pushNamed("/my_games");
-            },
-            child: const Text('My Games'),
+          Row(
+            children: [
+              Expanded(
+                  child: ElevatedButton.icon(
+                label: Text("Friends"),
+                icon: const Icon(
+                  Icons.group,
+                  size: 30,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.of(context, rootNavigator: true).pushNamed("/friends");
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: kPrimaryColor,
+                ),
+              )),
+              Expanded(child: Container()),
+              VerticalDivider(width: 1.0),
+              Expanded(
+                  child: ElevatedButton.icon(
+                label: Text("Logout"),
+                icon: const Icon(
+                  Icons.logout,
+                  size: 30,
+                  color: Colors.white,
+                ),
+
+                onPressed: () {
+                  globals.userToken = '';
+                  globals.userId = 0;
+                  globals.username = '';
+                  Navigator.of(context, rootNavigator: true).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: kPrimaryColor,
+                ),
+              ))
+            ],
           ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/ongoing_games");
-            },
-            child: const Text('Ongoing Games'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/game_invitations");
-            },
-            child: const Text('Game Invitations'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              globals.userToken = '';
-              globals.userId = 0;
-              globals.username = '';
-              Navigator.of(context, rootNavigator: true).pop();
-            },
-            child: const Text('Logout'),
-          ),
-        ]));
+        ]),
+        SingleChildScrollView(
+            child: Column(
+
+                children: <Widget>[
+                SizedBox(height: MediaQuery.of(context).size.width * 0.25),
+                MenuButton(
+                  onPressed: (() {                  
+                    Navigator.of(context, rootNavigator: true).pushNamed("/my_games");
+                    }
+                  ),
+                 
+                buttonText: "My Games",
+                            ),
+                SizedBox(height: MediaQuery.of(context).size.width * .07),
+                MenuButton(
+                  onPressed: (() {                  
+                    Navigator.of(context, rootNavigator: true).pushNamed("/ongoing_games");
+                    }
+                  ),
+              
+                buttonText: "Ongoing",
+                            ),
+                SizedBox(height: MediaQuery.of(context).size.width * .07),
+                MenuButton(
+                  onPressed: (() {                  
+                    Navigator.of(context, rootNavigator: true).pushNamed("/game_invitations");
+                    }
+                  ),
+              
+                buttonText: "Invitations",
+                            ),
+
+            ])),
+      ]),
+    ));
   }
 }
