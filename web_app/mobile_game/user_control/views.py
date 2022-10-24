@@ -84,3 +84,15 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
         if serializer.is_valid():
             serializer.save()
         return Response(serializer.data)
+
+class PlayerViewSet(PermissionPolicyMixin, viewsets.ModelViewSet):
+    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+    permission_classes_per_method = {
+        "create": [permissions.AllowAny]
+    }
+
+    queryset = Player.objects.all()
+    serializer_class = PlayerSerializer
+
+    
