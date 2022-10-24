@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny
 
 from django.contrib.auth.models import User
-from .serializers import PlayerSerializer, FriendRequestsSerializer, RegisterSerializer, SentFriendRequestSerializer, FriendRequestsUsernameSerializer
+from .serializers import PlayerSerializer, FriendRequestsSerializer, RegisterSerializer, SentFriendRequestSerializer, FriendRequestsUsernameSerializer, UserSerializer
 from .models import Player, FriendRequests
 
 import logging
@@ -27,12 +29,29 @@ class PermissionPolicyMixin:
             self.permission_classes = self.permission_classes_per_method.get(handler.__name__)
         super().check_permissions(request)
 
-class PlayerViewSet(PermissionPolicyMixin, viewsets.ModelViewSet):
-    authentication_classes = [SessionAuthentication, BasicAuthentication, TokenAuthentication]
-    permission_classes = [IsAuthenticated]
-    permission_classes_per_method = {
-        "create": [permissions.AllowAny]
-    }
+class UserViewSet(viewsets.ModelViewSet):
+    authentication_classes = [] #disables authentication
+    permission_classes = [AllowAny]
+
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def create(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+        return Response(serializer.data)
+    
+    @action(methods=['post'], detail=False)
+    def get_user_info(self, request, *args, **kwargs):
+        user = User.objects.get(username=request.data['username'])
+        items = Player.objects.get(user=user.id)
+        serializer = PlayerSerializer(items)
+        return Response(serializer.data)
+
+class PlayerViewSet(viewsets.ModelViewSet):
+    authentication_classes = [] #disables authentication
+    permission_classes = [AllowAny]
 
     queryset = Player.objects.all()
     serializer_class = PlayerSerializer
@@ -47,6 +66,19 @@ class PlayerViewSet(PermissionPolicyMixin, viewsets.ModelViewSet):
     def get_user_info(self, request, *args, **kwargs):
         items = Player.objects.get(user=request.user)
         serializer = PlayerSerializer(items)
+        return Response(serializer.data)
+    
+    @action(methods=['post'], detail=False)
+    def create_player(self, request, *args, **kwargs):
+        logger.info(request.data)
+        user = User.objects.create(
+            username=request.data['username']
+        )
+        user.set_password(request.data['password1'])
+        user.save()
+        Player.objects.create(user=user)
+        Token.objects.create(user=user)
+        serializer = UserSerializer(user)
         return Response(serializer.data)
 
 class FriendRequestsViewSet(viewsets.ModelViewSet):
@@ -83,6 +115,19 @@ class FriendRequestsViewSet(viewsets.ModelViewSet):
         serializer = SentFriendRequestSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+        return Response(serializer.data)
+    
+    @action(methods=['post'], detail=False)
+    def create_player(self, request):
+        logger.info(request.data)
+        user = User.objects.create(
+            username=request.data['username']
+        )
+        user.set_password(request.data['password1'])
+        user.save()
+        Player.objects.create(user=user)
+        Token.objects.create(user=user)
+        serializer = UserSerializer(user)
         return Response(serializer.data)
 
 class PlayerViewSet(PermissionPolicyMixin, viewsets.ModelViewSet):

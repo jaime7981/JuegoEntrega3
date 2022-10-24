@@ -37,7 +37,7 @@ var response = await post(Uri.parse(url),
 Future<http.Response> createPlayer(
     String username, String password, String confirmation) async {
   final response = await http.post(
-    Uri.parse('${globals.baseApiUrl}/players/'),
+    Uri.parse('${globals.baseApiUrl}/user/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -51,7 +51,12 @@ Future<http.Response> createPlayer(
   if (response.statusCode == 200) {
     debugPrint(jsonDecode(response.body).toString());
     return response;
+  } else if (response.statusCode == 201) {
+    debugPrint(jsonDecode(response.body).toString());
+    return response;
   } else {
+    debugPrint((response.body).toString());
+    debugPrint((response.statusCode).toString());
     throw Exception('Failed to create Player.');
   }
 }
@@ -70,26 +75,28 @@ Future<http.Response> login(String username, String password) async {
 
   if (response.statusCode == 200) {
     globals.userToken = jsonDecode(response.body)['token'].toString();
-    userInfo();
     return response;
   } else {
     throw Exception('Failed to login.');
   }
 }
 
-Future<http.Response> userInfo() async {
-  final response = await http.get(
-    Uri.parse('${globals.baseApiUrl}/players/get_user_info/'),
+Future<http.Response> userInfo(String username) async {
+  final response = await http.post(
+    Uri.parse('${globals.baseApiUrl}/user/get_user_info/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
       'Authorization': 'Token ${globals.userToken}',
     },
+    body: jsonEncode(<String, String>{
+      'username': username,
+    }),
   );
 
   if (response.statusCode == 200) {
-    debugPrint(jsonDecode(response.body)['user'].toString());
-    globals.userId = jsonDecode(response.body)['user']['id'];
-    globals.username = jsonDecode(response.body)['user']['username'].toString();
+    debugPrint(jsonDecode(response.body).toString());
+    globals.userId = jsonDecode(response.body)['id'];
+    globals.username = username;
     return response;
   } else {
     throw Exception(

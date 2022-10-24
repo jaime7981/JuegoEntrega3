@@ -141,17 +141,13 @@ class _LoginWidgetState extends State<LoginWidget> {
                     'password': passwordController.text
                   };
                   debugPrint('form data: $data');
-                  Future<http.Response> response =
-                      login(usernameController.text, passwordController.text);
-
-                  response.then((value) {
-                    if (globals.userToken != '') {
-                      Navigator.of(context, rootNavigator: true)
-                          .pushNamed("/home");
-                    }
-                  }).catchError((error) {
-                    debugPrint(error.toString());
-                  });
+                  login(usernameController.text, passwordController.text)
+                      .then((value) => {
+                            userInfo(usernameController.text).then((value) => {
+                                  Navigator.of(context, rootNavigator: true)
+                                      .pushNamed("/home")
+                                })
+                          });
                 }
               },
               child: Text(
