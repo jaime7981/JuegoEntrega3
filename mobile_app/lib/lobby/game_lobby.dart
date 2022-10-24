@@ -140,7 +140,16 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
                                       'players': _playerList,
                                       'round': value,
                                       'answers': answersValue,
-                                    })
+                                    }).then((value) => {
+                                              if (answersValue.length >=
+                                                  _playerList.length - 1)
+                                                {
+                                                  // Se debe cambiar a modalidad responder
+                                                  changeToAnswerMode(widget
+                                                          .arguments['game'].id)
+                                                      .then((value) => {})
+                                                }
+                                            })
                                   })
                         });
               }

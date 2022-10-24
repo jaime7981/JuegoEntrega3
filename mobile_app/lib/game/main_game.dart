@@ -38,6 +38,9 @@ class _MainGameWidgetState extends State<MainGameWidget> {
 
   @override
   Widget build(BuildContext context) {
+    List<Answer> answers = widget.arguments['answers'];
+    List<Lobby> lobby = widget.arguments['players'];
+
     if (widget.arguments['game'].gameState == 'A') {
       return RespondQuestion(
           questionId: widget.arguments['round'][0].question,
@@ -46,60 +49,74 @@ class _MainGameWidgetState extends State<MainGameWidget> {
           gameId: widget.arguments['game'].id);
     } else if (widget.arguments['game'].gameState == 'W') {
       return SingleChildScrollView(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+                  Widget>[
+        Form(
+          key: _formKey,
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  TextFormField(
-                    controller: answerController,
-                    decoration: const InputDecoration(
-                      hintText: 'Your Answer',
-                      labelText: 'Your Answer',
-                    ),
-                    validator: (String? value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter some text';
-                      }
-                      return null;
-                    },
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      debugPrint(widget.arguments["round"].toString());
-                      createAnswersByRoundId(widget.arguments["round"].id,
-                              answerController.text)
-                          .then((value) => {
-                                Navigator.of(context, rootNavigator: true).pop()
-                              });
-                    },
-                    child: const Text('Submit Answer'),
-                  ),
-                ],
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              TextFormField(
+                controller: answerController,
+                decoration: const InputDecoration(
+                  hintText: 'Your Answer',
+                  labelText: 'Your Answer',
+                ),
+                validator: (String? value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter some text';
+                  }
+                  return null;
+                },
               ),
-            ),
-            const Text('Players Answers'),
-            FutureBuilder<List<Answer>>(
-              future: roundAnswersByGameId(widget.arguments['game'].id),
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  debugPrint(snapshot.error.toString());
-                  return const Center(
-                    child: Text('An error has occurred!'),
-                  );
-                } else if (snapshot.hasData) {
-                  return AnswerList(answers: snapshot.data!);
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
-          ]));
+              ElevatedButton(
+                onPressed: () {
+                  debugPrint(widget.arguments["round"].toString());
+                  if (answers.length >= lobby.length - 1) {
+                    // Ultima pregunta por ser subida
+                    createAnswersByRoundId(
+                            widget.arguments["round"].id, answerController.text)
+                        .then((value) => {
+                              // Se debe cambiar a modalidad responder
+                              changeToAnswerMode(widget.arguments['game'].id)
+                                  .then((value) => {
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop()
+                                      })
+                            });
+                  } else {
+                    createAnswersByRoundId(
+                            widget.arguments["round"].id, answerController.text)
+                        .then((value) =>
+                            {Navigator.of(context, rootNavigator: true).pop()});
+                  }
+                },
+                child: const Text('Submit Answer'),
+              ),
+            ],
+          ),
+        ),
+        const Text('Players Answers'),
+        FutureBuilder<List<Answer>>(
+          future: roundAnswersByGameId(widget.arguments['game'].id),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              debugPrint(snapshot.error.toString());
+              return const Center(
+                child: Text('An error has occurred!'),
+              );
+            } else if (snapshot.hasData) {
+              return AnswerList(answers: snapshot.data!);
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
+      ]));
     } else if (widget.arguments['game'].gameState == 'S') {
       return ElevatedButton(
         onPressed: () {
