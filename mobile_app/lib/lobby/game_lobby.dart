@@ -109,32 +109,6 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
           ),
           ElevatedButton(
             onPressed: () {
-              roundByGameId(widget.arguments["game"].id).then((value) => {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed("/create_ans", arguments: {
-                      'game': widget.arguments["game"],
-                      'players': _playerList,
-                      'round': value[0]
-                    })
-                  });
-            },
-            child: const Text('Add Answer (DEBUG)'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              roundByGameId(widget.arguments["game"].id).then((value) => {
-                    Navigator.of(context, rootNavigator: true)
-                        .pushNamed("/choose_ans", arguments: {
-                      'game': widget.arguments["game"],
-                      'players': _playerList,
-                      'round': value
-                    })
-                  });
-            },
-            child: const Text('Respond Answer (DEBUG)'),
-          ),
-          ElevatedButton(
-            onPressed: () {
               if (widget.arguments["game"].gameState == 'S') {
                 resetGame(widget.arguments['game'].id).then((value) => {
                       roundAnswersByGameId(widget.arguments['game'].id)
@@ -172,6 +146,16 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
               }
             },
             child: Text(_gameStateButton),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              findGameById(widget.arguments['game'].id).then((value) => {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushReplacementNamed("/game_lobby",
+                            arguments: {'game': value})
+                  });
+            },
+            child: const Text('Refresh Lobby Data'),
           ),
         ]));
   }
