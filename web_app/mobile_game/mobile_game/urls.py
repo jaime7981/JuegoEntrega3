@@ -26,6 +26,7 @@ router = routers.DefaultRouter()
 # user control endpoints
 router.register('players', usercontrol.PlayerViewSet)
 router.register('friend_requests', usercontrol.FriendRequestsViewSet)
+router.register('user', usercontrol.UserViewSet)
 
 # game endpoints
 router.register('game', game_api.GameViewSet)

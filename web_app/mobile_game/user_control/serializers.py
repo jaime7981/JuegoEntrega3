@@ -4,6 +4,9 @@ from .models import Player, FriendRequests
 from rest_framework import serializers
 from django.contrib.auth.password_validation import validate_password
 
+import logging
+logger = logging.getLogger('django')
+
 class RegisterSerializer(serializers.ModelSerializer):
     password1 = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
@@ -18,6 +21,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        logger.info(validated_data['username'])
         user = User.objects.create(
             username=validated_data['username']
         )
@@ -64,8 +68,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username']
 
-class PlayerSerializer(serializers.HyperlinkedModelSerializer):
-    user = UserSerializer()
+class PlayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Player
