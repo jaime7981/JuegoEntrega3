@@ -155,3 +155,15 @@ class AnswerViewSet(viewsets.ModelViewSet):
         answers = Answer.objects.filter(round=round)
         serializer = AnswerSerializer(answers, many=True)
         return Response(serializer.data)
+
+    @action(methods=['post'], detail=False)
+    def change_to_answer(self, request, *args, **kwargs):
+        # get game
+        game = Game.objects.get(id = request.data['game_id'])
+
+        # change game state
+        game.game_state = 'A'
+        game.save(update_fields=['game_state'])
+
+        serializer = GameSerializer(game, many=False)
+        return Response(serializer.data)

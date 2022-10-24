@@ -2,6 +2,7 @@ from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django.utils import timezone
 
 # Create your models here.
 class Player(models.Model):
@@ -12,15 +13,15 @@ class Player(models.Model):
     total_matches = models.IntegerField(default=0, null=True, blank=True)
     match_percentage = models.IntegerField(default=0, null=True, blank=True)
 
-    creation_date = models.DateField(default= datetime.date.today()) 
-    current_date = models.DateField(default= datetime.date.today())
+    creation_date = models.DateField(default= timezone.now, null=True, blank=True) 
+    current_date = models.DateField(default= timezone.now, null=True, blank=True)
 
     #Estadisticas interesantes:
     #1. Mejor puntaje
     best_score = models.IntegerField(default=0, null=True, blank=True)
 
     #2. Mejor respuesta
-    best_answer = models.CharField(max_length=100)
+    best_answer = models.CharField(max_length=100, default='No best answer yet', null=True, blank=True)
 
     #3. Porcentaje de rondas ganadas
     played_rounds = models.IntegerField(default=0, null=True, blank=True)
@@ -30,12 +31,12 @@ class Player(models.Model):
     #4. ¿Tiene muchos amigos?
     # Algunos amigos = 'A veces me gusta hablar con gente' ; Muchos amigos = 'Me sé hasta tu dirección ip.'
     friends_amount = models.IntegerField(default=0, null=True, blank=True)
-    many_friends = models.CharField(max_length=100, default="No tengo amigos")
+    many_friends = models.CharField(max_length=100, default="No tengo amigos", null=True, blank=True)
 
     #5. ¿Juega con muchos amigos o prefiere jugar sólo?
     # Muchas invitaciones creadas = 'Alma de la fiesta' ; Pocas invitaciones = 'Batman trabaja sólo'
     invites_made = models.IntegerField(default=0, null=True, blank=True)
-    group_playing = models.CharField(max_length=100, default = "Yo literalmente no sé jugar")
+    group_playing = models.CharField(max_length=100, default = "Yo literalmente no sé jugar", null=True, blank=True)
 
 
     #friends = models.ManyToManyField(Player, through='FriendRequests')

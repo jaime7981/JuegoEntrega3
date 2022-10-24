@@ -61,6 +61,30 @@ Future<List<Answer>> createAnswersByRoundId(int roundId, String answer) async {
   }
 }
 
+Future<List<Answer>> changeToAnswerMode(int gameId) async {
+  final response = await http.post(
+    Uri.parse('${globals.baseApiUrl}/answer/change_to_answer/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+    body: jsonEncode(<String, String>{
+      'game_id': gameId.toString(),
+    }),
+  );
+
+  debugPrint(response.body.toString());
+  if (response.statusCode == 200) {
+    debugPrint(response.body.toString());
+    return parseAnswer(response.body);
+  } else if (response.statusCode == 201) {
+    debugPrint(response.body.toString());
+    return parseAnswer('[${response.body}]');
+  } else {
+    throw Exception('Failed to get answers by game id.');
+  }
+}
+
 Future<List<Answer>> roundAnswersByGameId(int gameId) async {
   final response = await http.post(
     Uri.parse('${globals.baseApiUrl}/answer/round_answers_by_game/'),
