@@ -76,7 +76,7 @@ class LobbyViewSet(viewsets.ModelViewSet):
         game = Game.objects.get(id = request.data['game_id'])
 
         # set one player to answer
-        joined = Lobby.objects.filter(game = game).filter(acepted_request=True).order_by('nr')[:10]
+        joined = Lobby.objects.filter(game = game).filter(acepted_request=True).order_by('id')[:10]
         items = list(joined)
         random.shuffle(items)
         flag = True
