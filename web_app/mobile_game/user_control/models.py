@@ -1,9 +1,40 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Player(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, blank=True, null=True)
+
+    matches_won = models.IntegerField(default=0, null=True, blank=True)
+    matches_lost = models.IntegerField(default=0, null=True, blank=True)
+    total_matches = models.IntegerField(default=0, null=True, blank=True)
+    match_percentage = models.IntegerField(default=0, null=True, blank=True)
+
+    creation_date = models.DateField(default= timezone.now, null=True, blank=True) 
+    current_date = models.DateField(default= timezone.now, null=True, blank=True)
+
+    #Estadisticas interesantes:
+    #1. Mejor puntaje
+    best_score = models.IntegerField(default=0, null=True, blank=True)
+
+    #2. Mejor respuesta
+    best_answer = models.CharField(max_length=100, default='No best answer yet', null=True, blank=True)
+
+    #3. Porcentaje de rondas ganadas
+    played_rounds = models.IntegerField(default=0, null=True, blank=True)
+    won_rounds = models.IntegerField(default=0, null=True, blank=True)
+    round_percentage = models.IntegerField(default=0, null=True, blank=True)
+
+    #4. ¿Tiene muchos amigos?
+    # Algunos amigos = 'A veces me gusta hablar con gente' ; Muchos amigos = 'Me sé hasta tu dirección ip.'
+    friends_amount = models.IntegerField(default=0, null=True, blank=True)
+    many_friends = models.CharField(max_length=100, default="No tengo amigos", null=True, blank=True)
+
+    #5. ¿Juega con muchos amigos o prefiere jugar sólo?
+    # Muchas invitaciones creadas = 'Alma de la fiesta' ; Pocas invitaciones = 'Batman trabaja sólo'
+    invites_made = models.IntegerField(default=0, null=True, blank=True)
+    group_playing = models.CharField(max_length=100, default = "Yo literalmente no sé jugar", null=True, blank=True)
 
     def __str__(self):
         return str(self.user)
