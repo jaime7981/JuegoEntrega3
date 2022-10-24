@@ -33,6 +33,7 @@ class MainGameWidget extends StatefulWidget {
 class _MainGameWidgetState extends State<MainGameWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController answerController = TextEditingController();
+  bool _showAnswer = false;
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +96,8 @@ class _MainGameWidgetState extends State<MainGameWidget> {
                 }
               },
             ),
+            if (_showAnswer)
+              Text('${widget.arguments['round'][0].question.correctAnswer}')
           ]));
     } else if (widget.arguments['game'].gameState == 'S') {
       return ElevatedButton(
@@ -130,7 +133,7 @@ class RespondQuestion extends StatelessWidget {
                     child: Text('An error has occurred!'),
                   );
                 } else if (snapshot.hasData) {
-                  return MixedList(
+                  return MixedListWidget(
                       question: snapshot.data!, userAnswers: answers);
                 } else {
                   return const Center(
@@ -170,16 +173,26 @@ class AnswerList extends StatelessWidget {
   }
 }
 
-class MixedList extends StatelessWidget {
-  const MixedList(
+class MixedListWidget extends StatefulWidget {
+  const MixedListWidget(
       {super.key, required this.question, required this.userAnswers});
 
   final List<Question> question;
   final List<Answer> userAnswers;
 
   @override
+  State<MixedListWidget> createState() => _MixedListWidgetState();
+}
+
+class _MixedListWidgetState extends State<MixedListWidget> {
+  bool _showAnswer = false;
+  String _pointsWon = '';
+
+  @override
   Widget build(BuildContext context) {
     var widgetList = [];
+    List<Question> question = widget.question;
+    List<Answer> userAnswers = widget.userAnswers;
     widgetList.add(Text(question[0].question));
     List<String> questionAnswers = [
       question[0].ans_1,
@@ -191,8 +204,6 @@ class MixedList extends StatelessWidget {
     List<String> finalAnswers = [question[0].correctAnswer];
 
     for (var item in userAnswers) {
-      debugPrint(item.toString());
-      debugPrint(item.playerAnswer.toString());
       finalAnswers.add(item.playerAnswer);
     }
 
@@ -207,10 +218,38 @@ class MixedList extends StatelessWidget {
 
     for (var item in finalAnswers) {
       widgetList.add(ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            _showAnswer = !_showAnswer;
+            if (question[0].correctAnswer == item) {
+              _pointsWon = '100 pts won';
+            } else {
+              _pointsWon = 'no points won';
+            }
+          });
+        },
         child: Text(item),
       ));
     }
+
+    widgetList.add(Column(
+      children: <Widget>[
+        Visibility(
+            visible: _showAnswer,
+            child: Column(
+              children: [
+                Text('Correct Answer: ${question[0].correctAnswer}'),
+                Text('Points: $_pointsWon'),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                  child: const Text('Back to lobby'),
+                ),
+              ],
+            ))
+      ],
+    ));
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
