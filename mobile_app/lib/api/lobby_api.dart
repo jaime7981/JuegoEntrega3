@@ -127,7 +127,7 @@ Future<http.Response> acceptLobby(int lobyId, int gameId, int playerId) async {
     body: jsonEncode(<String, String>{
       "game": gameId.toString(),
       "player": playerId.toString(),
-      "player_state": "R",
+      "player_state": "W",
       "points": '0',
       'acepted_request': true.toString(),
     }),

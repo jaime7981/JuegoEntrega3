@@ -41,14 +41,15 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-          const Text('Game Status (TODO: Add Status for game and player)'),
-          const Text('Like who responds or who is pending for answer'),
-          Text(widget.arguments["game"].name),
-          Text('Game Id ${widget.arguments["game"].id}'),
+          const Text('Game Status'),
+          Text('Name: ${widget.arguments["game"].name}'),
+          Text('State: ${widget.arguments["game"].gameState}'),
+          const Text('States: Starting/Writing/Answering'),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               const Text('Joined Players'),
+              const Text('States: Ready/Waiting/Answering'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -126,6 +127,9 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
           ),
           ElevatedButton(
             onPressed: () {
+              if (widget.arguments["game"].gameState == 'S') {
+                debugPrint('TODO: Update Round to initial state');
+              }
               roundAnswersByGameId(widget.arguments['game'].id)
                   .then((answersValue) => {
                         roundByGameId(widget.arguments["game"].id)
@@ -208,7 +212,13 @@ class LobbyList extends StatelessWidget {
         widgetList.add(Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('user: ${item.player} '),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text('user: ${item.player} '),
+                Text('state: ${item.playerState} '),
+              ],
+            ),
             ElevatedButton(
               onPressed: () {
                 deleteLobby(item.id).then((value) => {
