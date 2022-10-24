@@ -87,8 +87,8 @@ class _MainGameWidgetState extends State<MainGameWidget> {
                                       })
                             });
                   } else {
-                    createAnswersByRoundId(
-                            widget.arguments["round"].id, answerController.text)
+                    createAnswersByRoundId(widget.arguments["round"][0].id,
+                            answerController.text)
                         .then((value) =>
                             {Navigator.of(context, rootNavigator: true).pop()});
                   }
@@ -263,6 +263,7 @@ class _MixedListWidgetState extends State<MixedListWidget> {
               }
               _pointsWon = '100 pts won';
             } else {
+              bool flag = true;
               for (var answers in userAnswers) {
                 if (answers.playerAnswer == item) {
                   // User answer wins
@@ -272,10 +273,13 @@ class _MixedListWidgetState extends State<MixedListWidget> {
                     }
                   }
                   _pointsWon = 'Player id ${answers.player} wins 150 points';
+                  flag = false;
                   break;
                 }
               }
-              _pointsWon = 'No points won';
+              if (flag) {
+                _pointsWon = 'No points won';
+              }
             }
           });
           resetGame(widget.gameId).then((value) => {});

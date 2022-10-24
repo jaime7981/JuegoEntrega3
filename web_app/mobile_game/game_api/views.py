@@ -93,6 +93,7 @@ class LobbyViewSet(viewsets.ModelViewSet):
         count = Question.objects.count()
         round = Round.objects.get(game=game)
         round.question = question[randint(0, count - 1)]
+        Answer.objects.filter(round=round).delete()
         if len(joined) == 1:
             round.round_state = 'A'
             game.game_state = 'A'
