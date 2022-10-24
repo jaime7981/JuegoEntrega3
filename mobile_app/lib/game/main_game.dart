@@ -103,8 +103,6 @@ class _MainGameWidgetState extends State<MainGameWidget> {
         },
         child: const Text('Start Round'),
       );
-    } else {
-      return const Text('Something went wrong with game state');
     }
 
     return const Text('Something went wrong with unkown error');
@@ -120,9 +118,9 @@ class RespondQuestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text('Question: (Esto le aparece al que responde)'),
+          const Text('Question:'),
           FutureBuilder<List<Question>>(
               future: findQuestionById(questionId),
               builder: (context, snapshot) {

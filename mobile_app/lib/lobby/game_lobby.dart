@@ -34,9 +34,17 @@ class GameLobbyWidget extends StatefulWidget {
 
 class _GameLobbyWidgetState extends State<GameLobbyWidget> {
   var _playerList = [];
+  late String _gameStateButton;
 
   @override
   Widget build(BuildContext context) {
+    if (widget.arguments["game"].gameState == 'S') {
+      _gameStateButton = 'Start Game';
+    } else if (widget.arguments["game"].gameState == 'W') {
+      _gameStateButton = 'Writing Answers';
+    } else if (widget.arguments["game"].gameState == 'A') {
+      _gameStateButton = 'Answering';
+    }
     return SingleChildScrollView(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -128,23 +136,42 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
           ElevatedButton(
             onPressed: () {
               if (widget.arguments["game"].gameState == 'S') {
-                debugPrint('TODO: Update Round to initial state');
-              }
-              roundAnswersByGameId(widget.arguments['game'].id)
-                  .then((answersValue) => {
-                        roundByGameId(widget.arguments["game"].id)
-                            .then((value) => {
-                                  Navigator.of(context, rootNavigator: true)
-                                      .pushNamed("/main_game", arguments: {
-                                    'game': widget.arguments["game"],
-                                    'players': _playerList,
-                                    'round': value,
-                                    'answers': answersValue,
+                resetGame(widget.arguments['game'].id).then((value) => {
+                      roundAnswersByGameId(widget.arguments['game'].id)
+                          .then((answersValue) => {
+                                roundByGameId(widget.arguments["game"].id)
+                                    .then((value) => {
+                                          findGameById(
+                                                  widget.arguments['game'].id)
+                                              .then((value) => {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .pushReplacementNamed(
+                                                            "/game_lobby",
+                                                            arguments: {
+                                                          'game': value
+                                                        })
+                                                  })
+                                        })
+                              })
+                    });
+              } else {
+                roundAnswersByGameId(widget.arguments['game'].id)
+                    .then((answersValue) => {
+                          roundByGameId(widget.arguments["game"].id)
+                              .then((value) => {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pushNamed("/main_game", arguments: {
+                                      'game': widget.arguments["game"],
+                                      'players': _playerList,
+                                      'round': value,
+                                      'answers': answersValue,
+                                    })
                                   })
-                                })
-                      });
+                        });
+              }
             },
-            child: const Text('Enter Game'),
+            child: Text(_gameStateButton),
           ),
         ]));
   }
@@ -217,6 +244,7 @@ class LobbyList extends StatelessWidget {
               children: <Widget>[
                 Text('user: ${item.player} '),
                 Text('state: ${item.playerState} '),
+                Text('points: ${item.points} '),
               ],
             ),
             ElevatedButton(
