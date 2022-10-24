@@ -20,5 +20,6 @@
 - Una vez subidas las respuestas, el juador en 'Answering' deberá escoger la respuesta que crea correcta (y asegurarse de hacerlo una sola vez). Se le dirá si la respuesta es correcta o no, y tendrá la opción de ir al Lobby.
 - Actualizar el lobby para ver los puntajes actualizados, y repetir el proceso hasta terminar el juego!
 
- # Consejos de uso: - Actualizar el lobby para ver los puntajes actualizados. 
-                     - En caso de no actualizarse los botones de 'Answering'/'Writing', salir del lobby y volver a entrar para ver algún cambio.
+ ### Consejos de uso: 
+ - Actualizar el lobby para ver los puntajes actualizados. 
+ - En caso de no actualizarse los botones de 'Answering'/'Writing', salir del lobby y volver a entrar para ver algún cambio.
