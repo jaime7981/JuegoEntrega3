@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_app/api/answer_api.dart';
+import 'package:mobile_app/api/game_api.dart';
+import 'package:mobile_app/api/lobby_api.dart';
 import 'package:mobile_app/api/question_api.dart';
 import 'package:mobile_app/api/round_api.dart';
 import '../globals_vars.dart' as globals;
@@ -39,7 +41,9 @@ class _MainGameWidgetState extends State<MainGameWidget> {
     if (widget.arguments['game'].gameState == 'A') {
       return RespondQuestion(
           questionId: widget.arguments['round'][0].question,
-          answers: widget.arguments['answers']);
+          answers: widget.arguments['answers'],
+          lobbyPlayers: widget.arguments['players'],
+          gameId: widget.arguments['game'].id);
     } else if (widget.arguments['game'].gameState == 'W') {
       return SingleChildScrollView(
           child: Column(
@@ -103,8 +107,6 @@ class _MainGameWidgetState extends State<MainGameWidget> {
         },
         child: const Text('Start Round'),
       );
-    } else {
-      return const Text('Something went wrong with game state');
     }
 
     return const Text('Something went wrong with unkown error');
@@ -113,16 +115,22 @@ class _MainGameWidgetState extends State<MainGameWidget> {
 
 class RespondQuestion extends StatelessWidget {
   const RespondQuestion(
-      {super.key, required this.questionId, required this.answers});
+      {super.key,
+      required this.questionId,
+      required this.answers,
+      required this.lobbyPlayers,
+      required this.gameId});
   final int questionId;
   final List<Answer> answers;
+  final List<Lobby> lobbyPlayers;
+  final int gameId;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          const Text('Question: (Esto le aparece al que responde)'),
+          const Text('Question:'),
           FutureBuilder<List<Question>>(
               future: findQuestionById(questionId),
               builder: (context, snapshot) {
@@ -132,8 +140,11 @@ class RespondQuestion extends StatelessWidget {
                     child: Text('An error has occurred!'),
                   );
                 } else if (snapshot.hasData) {
-                  return MixedList(
-                      question: snapshot.data!, userAnswers: answers);
+                  return MixedListWidget(
+                      question: snapshot.data!,
+                      userAnswers: answers,
+                      lobbyPlayers: lobbyPlayers,
+                      gameId: gameId);
                 } else {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -172,16 +183,32 @@ class AnswerList extends StatelessWidget {
   }
 }
 
-class MixedList extends StatelessWidget {
-  const MixedList(
-      {super.key, required this.question, required this.userAnswers});
+class MixedListWidget extends StatefulWidget {
+  const MixedListWidget(
+      {super.key,
+      required this.question,
+      required this.userAnswers,
+      required this.lobbyPlayers,
+      required this.gameId});
 
   final List<Question> question;
   final List<Answer> userAnswers;
+  final List<Lobby> lobbyPlayers;
+  final int gameId;
+
+  @override
+  State<MixedListWidget> createState() => _MixedListWidgetState();
+}
+
+class _MixedListWidgetState extends State<MixedListWidget> {
+  bool _showAnswer = false;
+  String _pointsWon = '';
 
   @override
   Widget build(BuildContext context) {
     var widgetList = [];
+    List<Question> question = widget.question;
+    List<Answer> userAnswers = widget.userAnswers;
     widgetList.add(Text(question[0].question));
     List<String> questionAnswers = [
       question[0].ans_1,
@@ -193,8 +220,6 @@ class MixedList extends StatelessWidget {
     List<String> finalAnswers = [question[0].correctAnswer];
 
     for (var item in userAnswers) {
-      debugPrint(item.toString());
-      debugPrint(item.playerAnswer.toString());
       finalAnswers.add(item.playerAnswer);
     }
 
@@ -209,10 +234,57 @@ class MixedList extends StatelessWidget {
 
     for (var item in finalAnswers) {
       widgetList.add(ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          setState(() {
+            _showAnswer = !_showAnswer;
+            if (question[0].correctAnswer == item) {
+              // User correct wins
+              for (var lobby in widget.lobbyPlayers) {
+                if (lobby.player == globals.userId) {
+                  updateLobbyPoints(lobby.id, lobby.points + 100);
+                }
+              }
+              _pointsWon = '100 pts won';
+            } else {
+              for (var answers in userAnswers) {
+                if (answers.playerAnswer == item) {
+                  // User answer wins
+                  for (var lobby in widget.lobbyPlayers) {
+                    if (lobby.player == answers.player) {
+                      updateLobbyPoints(lobby.id, lobby.points + 150);
+                    }
+                  }
+                  _pointsWon = 'Player id ${answers.player} wins 150 points';
+                  break;
+                }
+              }
+              _pointsWon = 'No points won';
+            }
+          });
+          resetGame(widget.gameId).then((value) => {});
+        },
         child: Text(item),
       ));
     }
+
+    widgetList.add(Column(
+      children: <Widget>[
+        Visibility(
+            visible: _showAnswer,
+            child: Column(
+              children: [
+                Text('Correct Answer: ${question[0].correctAnswer}'),
+                Text('Points: $_pointsWon'),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  },
+                  child: const Text('Back to lobby'),
+                ),
+              ],
+            ))
+      ],
+    ));
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

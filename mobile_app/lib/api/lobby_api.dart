@@ -163,3 +163,22 @@ Future<void> deleteLobby(int lobyId) async {
     throw Exception('Failed to get friend requests.');
   }
 }
+
+Future<http.Response> updateLobbyPoints(int lobbyId, int points) async {
+  final response = await http.patch(
+    Uri.parse('${globals.baseApiUrl}/lobby/$lobbyId/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+    body: jsonEncode(<String, String>{
+      'points': points.toString(),
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return response;
+  } else {
+    throw Exception('Failed to get lobbies accepted.');
+  }
+}

@@ -111,3 +111,23 @@ Future<Game> findGameById(int gameId) async {
     throw Exception('Failed to get game.');
   }
 }
+
+Future<http.Response> resetGame(int gameId) async {
+  final response = await http.post(
+    Uri.parse('${globals.baseApiUrl}/lobby/reset/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+    body: jsonEncode(<String, String>{
+      'game_id': gameId.toString(),
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return response;
+  } else {
+    debugPrint(response.statusCode.toString());
+    throw Exception('Failed to get game.');
+  }
+}
