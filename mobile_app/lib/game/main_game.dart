@@ -41,6 +41,86 @@ class _MainGameWidgetState extends State<MainGameWidget> {
     List<Answer> answers = widget.arguments['answers'];
     List<Lobby> lobby = widget.arguments['players'];
 
+    for (var player in lobby) {
+      if (player.player == globals.userId) {
+        if (player.playerState == 'W' || player.playerState == 'R') {
+          return SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      TextFormField(
+                        controller: answerController,
+                        decoration: const InputDecoration(
+                          hintText: 'Your Answer',
+                          labelText: 'Your Answer',
+                        ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          debugPrint(widget.arguments["round"].toString());
+                          if (answers.length >= lobby.length - 1) {
+                            // Ultima pregunta por ser subida
+                            createAnswersByRoundId(widget.arguments["round"].id,
+                                    answerController.text)
+                                .then((value) => {
+                                      // Se debe cambiar a modalidad responder
+                                      changeToAnswerMode(
+                                              widget.arguments['game'].id)
+                                          .then((value) => {
+                                                Navigator.of(context,
+                                                        rootNavigator: true)
+                                                    .pop()
+                                              })
+                                    });
+                          } else {
+                            createAnswersByRoundId(
+                                    widget.arguments["round"][0].id,
+                                    answerController.text)
+                                .then((value) => {
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop()
+                                    });
+                          }
+                        },
+                        child: const Text('Submit Answer'),
+                      ),
+                    ],
+                  ),
+                ),
+                const Text('Players Answers'),
+                FutureBuilder<List<Answer>>(
+                  future: roundAnswersByGameId(widget.arguments['game'].id),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError) {
+                      debugPrint(snapshot.error.toString());
+                      return const Center(
+                        child: Text('An error has occurred!'),
+                      );
+                    } else if (snapshot.hasData) {
+                      return AnswerList(answers: snapshot.data!);
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ]));
+        }
+      }
+    }
+
     if (widget.arguments['game'].gameState == 'A') {
       for (var player in lobby) {
         if (player.player == globals.userId) {
