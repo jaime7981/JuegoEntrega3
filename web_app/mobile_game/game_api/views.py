@@ -9,7 +9,7 @@ from user_control.models import Player
 from .serializers import *
 from .models import Game, Lobby, Question, Round, Answer
 
-import logging
+import logging, random
 logger = logging.getLogger('django')
 
 class GameViewSet(viewsets.ModelViewSet):
@@ -68,6 +68,42 @@ class LobbyViewSet(viewsets.ModelViewSet):
     def joined(self, request, *args, **kwargs):
         joined= Lobby.objects.filter(game = request.data['game_id']).filter(acepted_request=True)
         serializer = LobbySerializer(joined, many=True)
+        return Response(serializer.data)
+    
+    @action(methods=['post'], detail=False)
+    def reset(self, request, *args, **kwargs):
+        # get game
+        game = Game.objects.get(id = request.data['game_id'])
+
+        # set one player to answer
+        joined = Lobby.objects.filter(game = game).filter(acepted_request=True)
+        random.shuffle(joined)
+        flag = True
+        for player in joined:
+            if flag == True:
+                player.player_state = 'A'
+                flag = False
+            else:
+                player.player_state = 'W'
+            player.save(update_fields=['player_state'])
+
+        # assign a new question
+        question = Question.objects.all()
+        count = Question.objects.count()
+        round = Round.objects.get(game=game)
+        round.question = question[randint(0, count - 1)]
+        if len(joined) == 1:
+            round.round_state = 'A'
+            game.game_state = 'A'
+        else:
+            round.round_state = 'W'
+            game.game_state = 'W'
+        
+        #set game state to writing if not alone
+        game.save(update_fields=['game_state'])
+        round.save(update_fields=['question', 'round_state'])
+
+        serializer = GameSerializer(game, many=False)
         return Response(serializer.data)
 
 class QuestionViewSet(viewsets.ModelViewSet):

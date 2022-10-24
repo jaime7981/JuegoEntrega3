@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_app/api/answer_api.dart';
 import 'package:mobile_app/api/lobby_api.dart';
+import 'package:mobile_app/api/round_api.dart';
 import '../globals_vars.dart' as globals;
 import 'package:mobile_app/api/game_api.dart';
 import 'package:mobile_app/api/friends_api.dart';
@@ -32,19 +34,30 @@ class GameLobbyWidget extends StatefulWidget {
 
 class _GameLobbyWidgetState extends State<GameLobbyWidget> {
   var _playerList = [];
+  late String _gameStateButton;
 
   @override
   Widget build(BuildContext context) {
+    if (widget.arguments["game"].gameState == 'S') {
+      _gameStateButton = 'Start Game';
+    } else if (widget.arguments["game"].gameState == 'W') {
+      _gameStateButton = 'Writing Answers';
+    } else if (widget.arguments["game"].gameState == 'A') {
+      _gameStateButton = 'Answering';
+    }
     return SingleChildScrollView(
         child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-          Text(widget.arguments["game"].name),
-          Text('Game Id ${widget.arguments["game"].id}'),
+          const Text('Game Status'),
+          Text('Name: ${widget.arguments["game"].name}'),
+          Text('State: ${widget.arguments["game"].gameState}'),
+          const Text('States: Starting/Writing/Answering'),
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               const Text('Joined Players'),
+              const Text('States: Ready/Waiting/Answering'),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -96,23 +109,53 @@ class _GameLobbyWidgetState extends State<GameLobbyWidget> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/create_ans", arguments: {
-                'game': widget.arguments["game"],
-                'players': _playerList
-              });
+              if (widget.arguments["game"].gameState == 'S') {
+                resetGame(widget.arguments['game'].id).then((value) => {
+                      roundAnswersByGameId(widget.arguments['game'].id)
+                          .then((answersValue) => {
+                                roundByGameId(widget.arguments["game"].id)
+                                    .then((value) => {
+                                          findGameById(
+                                                  widget.arguments['game'].id)
+                                              .then((value) => {
+                                                    Navigator.of(context,
+                                                            rootNavigator: true)
+                                                        .pushReplacementNamed(
+                                                            "/game_lobby",
+                                                            arguments: {
+                                                          'game': value
+                                                        })
+                                                  })
+                                        })
+                              })
+                    });
+              } else {
+                roundAnswersByGameId(widget.arguments['game'].id)
+                    .then((answersValue) => {
+                          roundByGameId(widget.arguments["game"].id)
+                              .then((value) => {
+                                    Navigator.of(context, rootNavigator: true)
+                                        .pushNamed("/main_game", arguments: {
+                                      'game': widget.arguments["game"],
+                                      'players': _playerList,
+                                      'round': value,
+                                      'answers': answersValue,
+                                    })
+                                  })
+                        });
+              }
             },
-            child: const Text('Add Answer'),
+            child: Text(_gameStateButton),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/choose_ans", arguments: {
-                'game': widget.arguments["game"],
-                'players': _playerList
-              });
+              findGameById(widget.arguments['game'].id).then((value) => {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushReplacementNamed("/game_lobby",
+                            arguments: {'game': value})
+                  });
             },
-            child: const Text('Respond Answer'),
+            child: const Text('Refresh Lobby Data'),
           ),
         ]));
   }
@@ -180,7 +223,14 @@ class LobbyList extends StatelessWidget {
         widgetList.add(Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            Text('user: ${item.player} '),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Text('user: ${item.player} '),
+                Text('state: ${item.playerState} '),
+                Text('points: ${item.points} '),
+              ],
+            ),
             ElevatedButton(
               onPressed: () {
                 deleteLobby(item.id).then((value) => {

@@ -45,7 +45,6 @@ Future<http.Response> createGame(String gameName) async {
     }),
   );
 
-
   debugPrint(response.body.toString());
   if (response.statusCode == 200) {
     return response;
@@ -83,7 +82,7 @@ Future<List<Game>> userCreatedGames() async {
       'Authorization': 'Token ${globals.userToken}',
     },
   );
-  
+
   if (response.statusCode == 200) {
     return parseGame(response.body);
   } else {
@@ -91,8 +90,8 @@ Future<List<Game>> userCreatedGames() async {
   }
 }
 
-Future<http.Response> findGameById(int gameId) async {
-  final game = await http.get(
+Future<Game> findGameById(int gameId) async {
+  final response = await http.get(
     Uri.parse('${globals.baseApiUrl}/game/$gameId/'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
@@ -100,9 +99,35 @@ Future<http.Response> findGameById(int gameId) async {
     },
   );
 
-  if (game.statusCode == 200) {
+  if (response.statusCode == 200) {
+    var parsedResponse = jsonDecode(response.body);
+    Game game = Game(
+        id: parsedResponse['id'],
+        gameState: parsedResponse['game_state'],
+        name: parsedResponse['name'],
+        host: parsedResponse['host']);
     return game;
   } else {
+    throw Exception('Failed to get game.');
+  }
+}
+
+Future<http.Response> resetGame(int gameId) async {
+  final response = await http.post(
+    Uri.parse('${globals.baseApiUrl}/lobby/reset/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+    body: jsonEncode(<String, String>{
+      'game_id': gameId.toString(),
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return response;
+  } else {
+    debugPrint(response.statusCode.toString());
     throw Exception('Failed to get game.');
   }
 }

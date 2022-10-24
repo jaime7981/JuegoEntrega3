@@ -127,7 +127,7 @@ Future<http.Response> acceptLobby(int lobyId, int gameId, int playerId) async {
     body: jsonEncode(<String, String>{
       "game": gameId.toString(),
       "player": playerId.toString(),
-      "player_state": "R",
+      "player_state": "W",
       "points": '0',
       'acepted_request': true.toString(),
     }),
@@ -161,5 +161,24 @@ Future<void> deleteLobby(int lobyId) async {
   } else {
     debugPrint(response.statusCode.toString());
     throw Exception('Failed to get friend requests.');
+  }
+}
+
+Future<http.Response> updateLobbyPoints(int lobbyId, int points) async {
+  final response = await http.patch(
+    Uri.parse('${globals.baseApiUrl}/lobby/$lobbyId/'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Token ${globals.userToken}',
+    },
+    body: jsonEncode(<String, String>{
+      'points': points.toString(),
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    return response;
+  } else {
+    throw Exception('Failed to get lobbies accepted.');
   }
 }

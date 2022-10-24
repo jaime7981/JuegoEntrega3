@@ -71,14 +71,10 @@ class LobbyList extends StatelessWidget {
         children: <Widget>[
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/game_lobby", arguments: {
-                'game': Game(
-                    id: item.game,
-                    gameState: item.playerState,
-                    name: item.aceptedRequest.toString(),
-                    host: item.player)
-              });
+              findGameById(item.game).then((value) => {
+                    Navigator.of(context, rootNavigator: true)
+                        .pushNamed("/game_lobby", arguments: {'game': value})
+                  });
             },
             child: Text('game id: ${item.game}'),
           ),

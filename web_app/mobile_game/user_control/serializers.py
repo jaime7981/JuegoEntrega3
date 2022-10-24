@@ -69,7 +69,7 @@ class PlayerSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Player
-        fields = ['user', 'matches_won', 'matches_lost', 'best_score']
+        fields = '__all__'
 
 class TokenSerializer(serializers.ModelSerializer):
     class Meta:
