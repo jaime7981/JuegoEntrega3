@@ -76,10 +76,11 @@ class LobbyViewSet(viewsets.ModelViewSet):
         game = Game.objects.get(id = request.data['game_id'])
 
         # set one player to answer
-        joined = Lobby.objects.filter(game = game).filter(acepted_request=True)
-        random.shuffle(joined)
+        joined = Lobby.objects.filter(game = game).filter(acepted_request=True).order_by('nr')[:10]
+        items = list(joined)
+        random.shuffle(items)
         flag = True
-        for player in joined:
+        for player in items:
             if flag == True:
                 player.player_state = 'A'
                 flag = False
