@@ -38,7 +38,6 @@ class ProfileWidget extends StatefulWidget {
 }
 
 class _ProfileWidgetState extends State<ProfileWidget> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,6 +86,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               future: findPlayerById(widget.arguments["userId"]),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
+                  debugPrint(snapshot.error.toString());
                   return const Center(
                     child: Text('An error has occurred!'),
                   );
@@ -107,72 +107,66 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 }
 
 class PlayerStatsList extends StatelessWidget {
-  const PlayerStatsList ({super.key, required this.player});
+  const PlayerStatsList({super.key, required this.player});
 
   final Player player;
-  
+
   @override
   Widget build(BuildContext context) {
     var widgetList = [];
-    
-    widgetList.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Text("Matches won: ${player.matchesWon}"),
-      ]
-    ));
 
     widgetList.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Text("Matches played: ${player.matchesWon + player.matchesLost}"),
-      ]
-    ));
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text("Matches won: ${player.matchesWon}"),
+        ]));
 
     widgetList.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Text("Best answer: ${player.bestAnswer}"),
-      ]
-    ));
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          if (player.matchesWon != null || player.matchesLost != null)
+            Text(
+                "Matches played: ${player.matchesWon! + player.matchesLost!.toInt()}"),
+        ]));
 
-     widgetList.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Text("Best score: ${player.bestScore}"),
-      ]
-    ));
-    if(player.playedRound < 1){
-          widgetList.add(Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,     
-            children: <Widget>[
-              const Text("Rounds win percentage: 0%"),
-      ]));
-    }
-    else{
+    widgetList.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text("Best answer: ${player.bestAnswer}"),
+        ]));
+
+    widgetList.add(Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text("Best score: ${player.bestScore}"),
+        ]));
+    if (player.playedRound != null) if (player.playedRound! < 1) {
       widgetList.add(Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Text("Rounds win percentage: ${player.matchPercentage}"),
-      ]));
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            const Text("Rounds win percentage: 0%"),
+          ]));
+    } else {
+      widgetList.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Text("Rounds win percentage: ${player.matchPercentage}"),
+          ]));
     }
 
     widgetList.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        //Thought it was a funny way of putting it :)
-        Text("Relationships status: ${player.manyFriends}"),
-      ]
-    ));
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          //Thought it was a funny way of putting it :)
+          Text("Relationships status: ${player.manyFriends}"),
+        ]));
 
     widgetList.add(Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Text("Social Activity in game: ${player.groupPlaying}"),
-      ]
-    ));
- 
-       
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text("Social Activity in game: ${player.groupPlaying}"),
+        ]));
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[for (var item in widgetList) item],
