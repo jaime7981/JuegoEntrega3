@@ -16,6 +16,8 @@ import 'package:mobile_app/lobby/ongoing_games.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_app/game/create_ans.dart';
 import 'package:mobile_app/game/choose_ans.dart';
+import 'package:mobile_app/profile/profile.dart';
+
 import 'package:mobile_app/globals_vars.dart';
 
 void main() => runApp(const EntryApp());
@@ -67,6 +69,7 @@ class EntryApp extends StatelessWidget {
         '/create_ans': (context) => const CreateAnsView(),
         '/choose_ans': (context) => const ChooseAnsView(),
         '/main_game': (context) => const MainGameView(),
+        '/profiles': (context) => const ProfileView(),
       },
     );
   }

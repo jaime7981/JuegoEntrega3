@@ -136,6 +136,17 @@ class _HomeWidgetState extends State<HomeWidget> {
               
                 buttonText: "Invitations",
                             ),
+                SizedBox(height: MediaQuery.of(context).size.width * .07),
+                MenuButton(
+                  onPressed: (() {                  
+                    Navigator.of(context, rootNavigator: true)
+                      .pushNamed("/profiles", arguments: {'userId': globals.userId});
+                    }
+                  ),
+              
+                buttonText: "My Profile",
+                ),
+                
 
             ])),
       ]),

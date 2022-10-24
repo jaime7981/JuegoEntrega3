@@ -241,6 +241,14 @@ class FriendRequestsList extends StatelessWidget {
               },
               child: const Text('Delete'),
             ),
+
+            ElevatedButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed("/profiles", arguments: {'userId': item.recieverPlayer});
+            },
+            child: const Text('View Profile'),
+            ),
           ],
         ));
       } else if (item.aceptedRequest == true &&
@@ -257,6 +265,14 @@ class FriendRequestsList extends StatelessWidget {
                     });
               },
               child: const Text('Delete'),
+            ),
+
+            ElevatedButton(
+            onPressed: () {
+              Navigator.of(context, rootNavigator: true)
+                  .pushNamed("/profiles", arguments: {'userId': item.recieverPlayer});
+            },
+            child: const Text('View Profile'),
             ),
           ],
         ));
