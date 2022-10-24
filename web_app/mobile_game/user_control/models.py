@@ -2,6 +2,7 @@ from email.policy import default
 from django.db import models
 from django.contrib.auth.models import User
 import datetime
+from django.utils import timezone
 
 # Create your models here.
 class Player(models.Model):
@@ -12,8 +13,8 @@ class Player(models.Model):
     total_matches = models.IntegerField(default=0, null=True, blank=True)
     match_percentage = models.IntegerField(default=0, null=True, blank=True)
 
-    creation_date = models.DateField(default= datetime.date.today()) 
-    current_date = models.DateField(default= datetime.date.today())
+    creation_date = models.DateField(default= timezone.now) 
+    current_date = models.DateField(default= timezone.now)
 
     #Estadisticas interesantes:
     #1. Mejor puntaje

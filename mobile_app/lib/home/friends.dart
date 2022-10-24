@@ -140,32 +140,41 @@ class _FriendsWidgetState extends State<FriendsWidget> {
                 }
               },
             ),
-            TextFormField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                hintText: 'Username',
-                labelText: 'Username',
+            Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  TextFormField(
+                    controller: usernameController,
+                    decoration: const InputDecoration(
+                      hintText: 'Username',
+                      labelText: 'Username',
+                    ),
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter some text';
+                      }
+                      return null;
+                    },
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        sendFriendRequests(usernameController.text)
+                            .then((value) {
+                          debugPrint(value.body.toString());
+                          Navigator.of(context, rootNavigator: true)
+                              .pushReplacementNamed("/friends");
+                        }).catchError((error) {
+                          debugPrint(error.toString());
+                        });
+                      }
+                    },
+                    child: const Text('Send Friend Request'),
+                  ),
+                ],
               ),
-              validator: (String? value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter some text';
-                }
-                return null;
-              },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  sendFriendRequests(usernameController.text).then((value) {
-                    debugPrint(value.body.toString());
-                    Navigator.of(context, rootNavigator: true)
-                        .pushReplacementNamed("/friends");
-                  }).catchError((error) {
-                    debugPrint(error.toString());
-                  });
-                }
-              },
-              child: const Text('Send Friend Request'),
             ),
           ]),
         ]),
@@ -241,13 +250,13 @@ class FriendRequestsList extends StatelessWidget {
               },
               child: const Text('Delete'),
             ),
-
             ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/profiles", arguments: {'userId': item.recieverPlayer});
-            },
-            child: const Text('View Profile'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pushNamed(
+                    "/profiles",
+                    arguments: {'userId': item.recieverPlayer});
+              },
+              child: const Text('View Profile'),
             ),
           ],
         ));
@@ -266,13 +275,13 @@ class FriendRequestsList extends StatelessWidget {
               },
               child: const Text('Delete'),
             ),
-
             ElevatedButton(
-            onPressed: () {
-              Navigator.of(context, rootNavigator: true)
-                  .pushNamed("/profiles", arguments: {'userId': item.recieverPlayer});
-            },
-            child: const Text('View Profile'),
+              onPressed: () {
+                Navigator.of(context, rootNavigator: true).pushNamed(
+                    "/profiles",
+                    arguments: {'userId': item.recieverPlayer});
+              },
+              child: const Text('View Profile'),
             ),
           ],
         ));
