@@ -42,12 +42,32 @@ class _MainGameWidgetState extends State<MainGameWidget> {
     List<Lobby> lobby = widget.arguments['players'];
 
     if (widget.arguments['game'].gameState == 'A') {
+      for (var player in lobby) {
+        if (player.player == globals.userId) {
+          if (player.playerState == 'W' || player.playerState == 'R') {
+            return const Text('Debes esperar a que el jugador responda');
+          }
+        }
+      }
       return RespondQuestion(
           questionId: widget.arguments['round'][0].question,
           answers: widget.arguments['answers'],
           lobbyPlayers: widget.arguments['players'],
           gameId: widget.arguments['game'].id);
     } else if (widget.arguments['game'].gameState == 'W') {
+      if (answers.length >= lobby.length - 1) {
+        // Se debe cambiar a modalidad responder
+        debugPrint('Cambiando a Answer');
+        changeToAnswerMode(widget.arguments['game'].id).then(
+            (value) => {Navigator.of(context, rootNavigator: true).pop()});
+      }
+      for (var player in lobby) {
+        if (player.player == globals.userId) {
+          if (player.playerState == 'A') {
+            return const Text('Debes esperar a que se suban las respuestas');
+          }
+        }
+      }
       return SingleChildScrollView(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
